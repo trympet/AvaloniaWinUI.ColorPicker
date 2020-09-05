@@ -274,7 +274,7 @@ namespace Avalonia.ColorPicker
             // If we're in the process of internally updating the color, then we don't want to respond to the Color property changing.
             if (!m_updatingColor)
             {
-                var color = new Color();
+                var color = args.NewValue.GetValueOrDefault<Color>();
 
                 m_updatingHsvColor = true;
                 var newHsv = ColorHelpers.RgbToHsv(new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0));

@@ -3,12 +3,12 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
-    <IsPackable>False</IsPackable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview3" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-preview3" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-preview5" />
   </ItemGroup>
 
   <ItemGroup>
