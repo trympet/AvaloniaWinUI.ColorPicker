@@ -873,9 +873,9 @@ namespace Avalonia.ColorPicker
 
                 var alphaTextBoxText = m_alphaTextBox.Text;
 
-                if (alphaTextBoxText[alphaTextBoxText.Length - 1] != '%')
+                if (alphaTextBoxText.Length == 0 || alphaTextBoxText[alphaTextBoxText.Length - 1] != '%')
                 {
-                    m_alphaTextBox.Text = alphaTextBoxText = alphaTextBoxText + "%";
+                    m_alphaTextBox.Text = alphaTextBoxText += "%";
                     m_alphaTextBox.CaretIndex = cursorPosition;
                 }
 
@@ -906,20 +906,21 @@ namespace Avalonia.ColorPicker
             }
 
             var hexTextBox = (TextBox)sender;
+            var hexTextBoxText = hexTextBox.Text;
 
             // If the user hasn't entered a #, we'll do that for them, keeping the cursor
             // where it was before.
-            if (hexTextBox.Text[0] != '#')
+            if (hexTextBoxText.Length == 0 || hexTextBoxText[0] != '#')
             {
-                hexTextBox.Text = "#" + hexTextBox.Text;
+                hexTextBox.Text = hexTextBoxText = "#" + hexTextBoxText;
                 // TODO should it use saved before length?
-                hexTextBox.CaretIndex = hexTextBox.Text.Length;
+                hexTextBox.CaretIndex = hexTextBoxText.Length;
             }
 
             // We'll respond to the text change if the user has entered a valid value.
             // Otherwise, we'll do nothing except mark the text box's contents as invalid.
             var isAlphaEnabled = IsAlphaEnabled;
-            if (Color.TryParse(hexTextBox.Text, out var parsedColor))
+            if (Color.TryParse(hexTextBoxText, out var parsedColor))
             {
                 var rgbValue = new Rgb(parsedColor.R / 255.0, parsedColor.G / 255.0, parsedColor.B / 255.0);
                 var alphaValue = parsedColor.A / 255.0;
