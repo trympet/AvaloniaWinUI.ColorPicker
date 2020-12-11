@@ -184,7 +184,7 @@ namespace Avalonia.ColorPicker.Tests
             var hexTextBox = FindVisualChildren<TextBox>(colorPicker, "PART_HexTextBox").FirstOrDefault();
             Assert.NotNull(hexTextBox);
 
-            Assert.True(hexTextBox.Text.Length > 0, "Hex TextBox should have not been empty.");
+            Assert.True(hexTextBox!.Text.Length > 0, "Hex TextBox should have not been empty.");
 
             // Clearing the hex input field should not crash the app.
             hexTextBox.Text = "";
@@ -209,7 +209,7 @@ namespace Avalonia.ColorPicker.Tests
             var alphaChannelTextBox = FindVisualChildren<TextBox>(colorPicker, "PART_AlphaTextBox").FirstOrDefault();
             Assert.NotNull(alphaChannelTextBox);
 
-            Assert.True(alphaChannelTextBox.Text.Length > 0, "Alpha channel TextBox should have not been empty.");
+            Assert.True(alphaChannelTextBox!.Text.Length > 0, "Alpha channel TextBox should have not been empty.");
 
             // Clearing the alpha channel input field should not crash the app.
             alphaChannelTextBox.Text = "";

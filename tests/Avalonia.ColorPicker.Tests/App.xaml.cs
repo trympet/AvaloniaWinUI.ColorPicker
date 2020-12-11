@@ -8,7 +8,7 @@ namespace Avalonia.ColorPicker.Tests
         {
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToDebug();
+                .LogToTrace();
         }
 
         public override void Initialize()
