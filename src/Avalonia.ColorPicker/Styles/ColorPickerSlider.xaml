@@ -106,9 +106,9 @@
                            Width="{DynamicResource SliderHorizontalThumbWidth}"
                            ToolTip.Placement="Top"
                            ToolTip.VerticalOffset="-20">
-                      <ToolTip.Tip>
+                      <!--<ToolTip.Tip>
                         <ToolTip x:Name="PART_ToolTip" IsHitTestVisible="False" Focusable="False" />
-                      </ToolTip.Tip>
+                      </ToolTip.Tip>-->
                     </Thumb>
                   </Track>
                 </Grid>

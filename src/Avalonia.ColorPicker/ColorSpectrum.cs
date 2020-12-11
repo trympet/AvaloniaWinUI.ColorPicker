@@ -242,30 +242,30 @@ namespace Avalonia.ColorPicker
             }
             else if (args.Property == HsvColorProperty)
             {
-                OnHsvColorChanged(args);
+                OnHsvColorChanged();
             }
             else if (args.Property == MinHueProperty ||
                 args.Property == MaxHueProperty)
             {
-                OnMinMaxHueChanged(args);
+                OnMinMaxHueChanged();
             }
             else if (args.Property == MinSaturationProperty ||
                 args.Property == MaxSaturationProperty)
             {
-                OnMinMaxSaturationChanged(args);
+                OnMinMaxSaturationChanged();
             }
             else if (args.Property == MinValueProperty ||
                 args.Property == MaxValueProperty)
             {
-                OnMinMaxValueChanged(args);
+                OnMinMaxValueChanged();
             }
             else if (args.Property == ShapeProperty)
             {
-                OnShapeChanged(args);
+                OnShapeChanged();
             }
             else if (args.Property == ComponentsProperty)
             {
-                OnComponentsChanged(args);
+                OnComponentsChanged();
             }
         }
 
@@ -277,7 +277,7 @@ namespace Avalonia.ColorPicker
                 var color = args.NewValue.GetValueOrDefault<Color>();
 
                 m_updatingHsvColor = true;
-                var newHsv = ColorHelpers.RgbToHsv(new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0));
+                var newHsv = ColorConversion.RgbToHsv(new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0));
                 HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, (float)(color.A / 255.0));
                 m_updatingHsvColor = false;
 
@@ -288,7 +288,7 @@ namespace Avalonia.ColorPicker
             m_oldColor = args.OldValue.GetValueOrDefault<Color>();
         }
 
-        private void OnHsvColorChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnHsvColorChanged()
         {
             // If we're in the process of internally updating the HSV color, then we don't want to respond to the HsvColor property changing.
             if (!m_updatingHsvColor)
@@ -303,9 +303,9 @@ namespace Avalonia.ColorPicker
 
             m_updatingColor = true;
             
-            var newRgb = ColorHelpers.HsvToRgb((Hsv)hsvColor);
+            var newRgb = ColorConversion.HsvToRgb((Hsv)hsvColor);
 
-            Color = ColorHelpers.ColorFromRgba(newRgb, hsvColor.Z);
+            Color = ColorConversion.ColorFromRgba(newRgb, hsvColor.Z);
 
             m_updatingColor = false;
 
@@ -333,7 +333,7 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnMinMaxHueChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxHueChanged()
         {
             var components = Components;
 
@@ -346,7 +346,7 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnMinMaxSaturationChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxSaturationChanged()
         {
             var components = Components;
 
@@ -359,7 +359,7 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnMinMaxValueChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxValueChanged()
         {
             var components = Components;
 
@@ -372,12 +372,12 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnShapeChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnShapeChanged()
         {
             CreateBitmapsAndColorMap();
         }
 
-        private void OnComponentsChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnComponentsChanged()
         {
             CreateBitmapsAndColorMap();
         }
@@ -399,13 +399,11 @@ namespace Avalonia.ColorPicker
             m_updatingColor = true;
             m_updatingHsvColor = true;
 
-            var newRgb = ColorHelpers.HsvToRgb(newHsv);
+            var newRgb = ColorConversion.HsvToRgb(newHsv);
             var alpha = HsvColor.Z;
 
-            Color = ColorHelpers.ColorFromRgba(newRgb, alpha);
-            var hsvColor = (Vector4)newHsv;
-            hsvColor.Z = alpha;
-            HsvColor = hsvColor;
+            Color = ColorConversion.ColorFromRgba(newRgb, alpha);
+            HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, alpha);
 
             UpdateEllipse();
             UpdatePseudoclasses();
@@ -660,14 +658,18 @@ namespace Avalonia.ColorPicker
             Canvas.SetLeft(m_selectionEllipsePanel, xPosition - (m_selectionEllipsePanel.Width / 2));
             Canvas.SetTop(m_selectionEllipsePanel, yPosition - (m_selectionEllipsePanel.Height / 2));
 
-            //if (m_colorNameToolTip != null
-            //    && ToolTip.GetIsOpen(m_colorNameToolTipHolder) == true)
-            //{
-            //    // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
-            //    // so toggling IsOpen induces it to do that without incurring any visual glitches.
-            //    ToolTip.SetIsOpen(m_colorNameToolTipHolder, false);
-            //    ToolTip.SetIsOpen(m_colorNameToolTipHolder, true);
-            //}
+            // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves.
+            if (m_colorNameToolTip != null
+                && ToolTip.GetIsOpen(m_colorNameToolTipHolder))
+            {
+                var oldTransitions = m_colorNameToolTip.Transitions;
+                m_colorNameToolTip.Transitions = null;
+
+                ToolTip.SetIsOpen(m_colorNameToolTipHolder, false);
+                ToolTip.SetIsOpen(m_colorNameToolTipHolder, true);
+
+                m_colorNameToolTip.Transitions = oldTransitions;
+            }
 
             UpdatePseudoclasses();
         }
@@ -695,7 +697,8 @@ namespace Avalonia.ColorPicker
                 // TODO args.Pointer.Type == PointerType.Pen ||
                 args.Pointer.Type == PointerType.Touch;
 
-            // TODO m_inputTarget.CapturePointer(args.Pointer);
+            args.Pointer.Capture(m_inputTarget);
+
             UpdateColorFromPoint(args.GetCurrentPoint(m_inputTarget));
             UpdatePseudoclasses();
             UpdateEllipse();
@@ -719,7 +722,7 @@ namespace Avalonia.ColorPicker
             m_isPointerPressed = false;
             m_shouldShowLargeSelection = false;
 
-            // TODO m_inputTarget.ReleasePointerCapture(args.Pointer);
+            args.Pointer.Capture(null);
             UpdatePseudoclasses();
             UpdateEllipse();
 
@@ -869,8 +872,10 @@ namespace Avalonia.ColorPicker
             var pixelWidth = (int)Math.Round(minDimension);
             var pixelHeight = (int)Math.Round(minDimension);
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
             var minBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMinPixelData);
             var maxBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMaxPixelData);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
             switch (components)
             {
@@ -1011,7 +1016,7 @@ namespace Avalonia.ColorPicker
 
             newHsvValues.Add(hsvMin);
 
-            var rgbMin = ColorHelpers.HsvToRgb(hsvMin);
+            var rgbMin = ColorConversion.HsvToRgb(hsvMin);
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.B * 255)); // b
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.G * 255)); // g
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.R * 255)); // r
@@ -1021,32 +1026,32 @@ namespace Avalonia.ColorPicker
             if (components == ColorSpectrumComponents.ValueSaturation ||
                 components == ColorSpectrumComponents.SaturationValue)
             {
-                var rgbMiddle1 = ColorHelpers.HsvToRgb(hsvMiddle1);
+                var rgbMiddle1 = ColorConversion.HsvToRgb(hsvMiddle1);
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.B * 255)); // b
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.G * 255)); // g
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.R * 255)); // r
                 bgraMiddle1PixelData.Add(255); // a - ignored
 
-                var rgbMiddle2 = ColorHelpers.HsvToRgb(hsvMiddle2);
+                var rgbMiddle2 = ColorConversion.HsvToRgb(hsvMiddle2);
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.B * 255)); // b
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.G * 255)); // g
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.R * 255)); // r
                 bgraMiddle2PixelData.Add(255); // a - ignored
 
-                var rgbMiddle3 = ColorHelpers.HsvToRgb(hsvMiddle3);
+                var rgbMiddle3 = ColorConversion.HsvToRgb(hsvMiddle3);
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.B * 255)); // b
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.G * 255)); // g
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.R * 255)); // r
                 bgraMiddle3PixelData.Add(255); // a - ignored
 
-                var rgbMiddle4 = ColorHelpers.HsvToRgb(hsvMiddle4);
+                var rgbMiddle4 = ColorConversion.HsvToRgb(hsvMiddle4);
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.B * 255)); // b
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.G * 255)); // g
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.R * 255)); // r
                 bgraMiddle4PixelData.Add(255); // a - ignored
             }
 
-            var rgbMax = ColorHelpers.HsvToRgb(hsvMax);
+            var rgbMax = ColorConversion.HsvToRgb(hsvMax);
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.B * 255)); // b
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.G * 255)); // g
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.R * 255)); // r
@@ -1179,7 +1184,7 @@ namespace Avalonia.ColorPicker
 
             newHsvValues.Add(hsvMin);
 
-            var rgbMin = ColorHelpers.HsvToRgb(hsvMin);
+            var rgbMin = ColorConversion.HsvToRgb(hsvMin);
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.B * 255)); // b
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.G * 255)); // g
             bgraMinPixelData.Add((byte) Math.Round(rgbMin.R * 255)); // r
@@ -1189,32 +1194,32 @@ namespace Avalonia.ColorPicker
             if (components == ColorSpectrumComponents.ValueSaturation ||
                 components == ColorSpectrumComponents.SaturationValue)
             {
-                var rgbMiddle1 = ColorHelpers.HsvToRgb(hsvMiddle1);
+                var rgbMiddle1 = ColorConversion.HsvToRgb(hsvMiddle1);
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.B * 255)); // b
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.G * 255)); // g
                 bgraMiddle1PixelData.Add((byte) Math.Round(rgbMiddle1.R * 255)); // r
                 bgraMiddle1PixelData.Add(255); // a
 
-                var rgbMiddle2 = ColorHelpers.HsvToRgb(hsvMiddle2);
+                var rgbMiddle2 = ColorConversion.HsvToRgb(hsvMiddle2);
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.B * 255)); // b
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.G * 255)); // g
                 bgraMiddle2PixelData.Add((byte) Math.Round(rgbMiddle2.R * 255)); // r
                 bgraMiddle2PixelData.Add(255); // a
 
-                var rgbMiddle3 = ColorHelpers.HsvToRgb(hsvMiddle3);
+                var rgbMiddle3 = ColorConversion.HsvToRgb(hsvMiddle3);
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.B * 255)); // b
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.G * 255)); // g
                 bgraMiddle3PixelData.Add((byte) Math.Round(rgbMiddle3.R * 255)); // r
                 bgraMiddle3PixelData.Add(255); // a
 
-                var rgbMiddle4 = ColorHelpers.HsvToRgb(hsvMiddle4);
+                var rgbMiddle4 = ColorConversion.HsvToRgb(hsvMiddle4);
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.B * 255)); // b
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.G * 255)); // g
                 bgraMiddle4PixelData.Add((byte) Math.Round(rgbMiddle4.R * 255)); // r
                 bgraMiddle4PixelData.Add(255); // a
             }
 
-            var rgbMax = ColorHelpers.HsvToRgb(hsvMax);
+            var rgbMax = ColorConversion.HsvToRgb(hsvMax);
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.B * 255)); // b
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.G * 255)); // g
             bgraMaxPixelData.Add((byte) Math.Round(rgbMax.R * 255)); // r
@@ -1371,8 +1376,8 @@ namespace Avalonia.ColorPicker
                 var hsvColorVector = HsvColor;
                 var hsvColor = (Hsv)hsvColorVector;
                 hsvColor.V = 1;
-                var color = ColorHelpers.HsvToRgb(hsvColor);
-                displayedColor = ColorHelpers.ColorFromRgba(color, hsvColorVector.Z);
+                var color = ColorConversion.HsvToRgb(hsvColor);
+                displayedColor = ColorConversion.ColorFromRgba(color, hsvColorVector.Z);
             }
             else
             {

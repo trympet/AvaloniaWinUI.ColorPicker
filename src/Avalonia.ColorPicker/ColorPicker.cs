@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using System.Threading;
 
@@ -292,30 +293,30 @@ namespace Avalonia.ColorPicker
             }
             else if (property == PreviousColorProperty)
             {
-                OnPreviousColorChanged(args);
+                OnPreviousColorChanged();
             }
             else if (property == IsAlphaEnabledProperty)
             {
-                OnIsAlphaEnabledChanged(args);
+                OnIsAlphaEnabledChanged();
             }
             else if (property == MinHueProperty ||
                 property == MaxHueProperty)
             {
-                OnMinMaxHueChanged(args);
+                OnMinMaxHueChanged();
             }
             else if (property == MinSaturationProperty ||
                 property == MaxSaturationProperty)
             {
-                OnMinMaxSaturationChanged(args);
+                OnMinMaxSaturationChanged();
             }
             else if (property == MinValueProperty ||
                 property == MaxValueProperty)
             {
-                OnMinMaxValueChanged(args);
+                OnMinMaxValueChanged();
             }
             else if (property == ColorSpectrumComponentsProperty)
             {
-                OnColorSpectrumComponentsChanged(args);
+                OnColorSpectrumComponentsChanged();
             }
         }
 
@@ -329,7 +330,7 @@ namespace Avalonia.ColorPicker
 
                 m_currentRgb = new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0);
                 m_currentAlpha = color.A / 255.0;
-                m_currentHsv = ColorHelpers.RgbToHsv(m_currentRgb);
+                m_currentHsv = ColorConversion.RgbToHsv(m_currentRgb);
                 m_currentHex = GetCurrentHexValue();
 
                 UpdateColorControls(ColorUpdateReason.ColorPropertyChanged);
@@ -348,12 +349,12 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnPreviousColorChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnPreviousColorChanged()
         {
             UpdatePreviousColorRectangle();
         }
 
-        private void OnIsAlphaEnabledChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnIsAlphaEnabledChanged()
         {
             m_currentHex = GetCurrentHexValue();
 
@@ -365,18 +366,18 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void OnMinMaxHueChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxHueChanged()
         {
             var minHue = MinHue;
             var maxHue = MaxHue;
 
-            m_currentHsv.H = Math.Max((double)minHue, Math.Min(m_currentHsv.H, (double)maxHue));
+            m_currentHsv.H = Math.Max(minHue, Math.Min(m_currentHsv.H, maxHue));
 
             UpdateColor(m_currentHsv, ColorUpdateReason.ColorPropertyChanged);
             UpdateThirdDimensionSlider();
         }
 
-        private void OnMinMaxSaturationChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxSaturationChanged()
         {
             var minSaturation = MinSaturation;
             var maxSaturation = MaxSaturation;
@@ -387,7 +388,7 @@ namespace Avalonia.ColorPicker
             UpdateThirdDimensionSlider();
         }
 
-        private void OnMinMaxValueChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnMinMaxValueChanged()
         {
             var minValue = MinValue;
             var maxValue = MaxValue;
@@ -398,7 +399,7 @@ namespace Avalonia.ColorPicker
             UpdateThirdDimensionSlider();
         }
 
-        private void OnColorSpectrumComponentsChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnColorSpectrumComponentsChanged()
         {
             UpdateThirdDimensionSlider();
             SetThirdDimensionSliderChannel();
@@ -409,7 +410,7 @@ namespace Avalonia.ColorPicker
             var color = Color;
 
             m_currentRgb = new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0);
-            m_currentHsv = ColorHelpers.RgbToHsv(m_currentRgb);
+            m_currentHsv = ColorConversion.RgbToHsv(m_currentRgb);
             m_currentAlpha = color.A / 255.0;
             m_currentHex = GetCurrentHexValue();
 
@@ -419,7 +420,7 @@ namespace Avalonia.ColorPicker
         private void UpdateColor(Rgb rgb, ColorUpdateReason reason)
         {
             m_currentRgb = rgb;
-            m_currentHsv = ColorHelpers.RgbToHsv(m_currentRgb);
+            m_currentHsv = ColorConversion.RgbToHsv(m_currentRgb);
             m_currentHex = GetCurrentHexValue();
 
             SetColorAndUpdateControls(reason);
@@ -428,7 +429,7 @@ namespace Avalonia.ColorPicker
         private void UpdateColor(Hsv hsv, ColorUpdateReason reason)
         {
             m_currentHsv = hsv;
-            m_currentRgb = ColorHelpers.HsvToRgb(hsv);
+            m_currentRgb = ColorConversion.HsvToRgb(hsv);
             m_currentHex = GetCurrentHexValue();
 
             SetColorAndUpdateControls(reason);
@@ -446,7 +447,7 @@ namespace Avalonia.ColorPicker
         {
             m_updatingColor = true;
 
-            Color = ColorHelpers.ColorFromRgba(m_currentRgb, m_currentAlpha);
+            Color = ColorConversion.ColorFromRgba(m_currentRgb, m_currentAlpha);
             UpdateColorControls(reason);
 
             m_updatingColor = false;
@@ -482,9 +483,7 @@ namespace Avalonia.ColorPicker
             // don't want to update the ColorSpectrum's color based on this change.
             if (reason != ColorUpdateReason.ColorSpectrumColorChanged && m_colorSpectrum != null)
             {
-                var vectorColor = (Vector4)m_currentHsv;
-                vectorColor.Z = (float)m_currentAlpha;
-                m_colorSpectrum.HsvColor = vectorColor;
+                m_colorSpectrum.HsvColor = new Vector4((float)m_currentHsv.H, (float)m_currentHsv.S, (float)m_currentHsv.V, (float)m_currentAlpha);
             }
 
             if (m_colorPreviewRectangle != null)
@@ -511,17 +510,17 @@ namespace Avalonia.ColorPicker
                 {
                     if (m_redTextBox != null)
                     {
-                        m_redTextBox.Text = ((byte)Math.Round(m_currentRgb.R * 255)).ToString();
+                        m_redTextBox.Text = ((byte)Math.Round(m_currentRgb.R * 255)).ToString(CultureInfo.InvariantCulture);
                     }
 
                     if (m_greenTextBox != null)
                     {
-                        m_greenTextBox.Text = ((byte)Math.Round(m_currentRgb.G * 255)).ToString();
+                        m_greenTextBox.Text = ((byte)Math.Round(m_currentRgb.G * 255)).ToString(CultureInfo.InvariantCulture);
                     }
 
                     if (m_blueTextBox != null)
                     {
-                        m_blueTextBox.Text = ((byte)Math.Round(m_currentRgb.B * 255)).ToString();
+                        m_blueTextBox.Text = ((byte)Math.Round(m_currentRgb.B * 255)).ToString(CultureInfo.InvariantCulture);
                     }
                 }
 
@@ -529,17 +528,17 @@ namespace Avalonia.ColorPicker
                 {
                     if (m_hueTextBox != null)
                     {
-                        m_hueTextBox.Text = ((int)Math.Round(m_currentHsv.H)).ToString();
+                        m_hueTextBox.Text = ((int)Math.Round(m_currentHsv.H)).ToString(CultureInfo.InvariantCulture);
                     }
 
                     if (m_saturationTextBox != null)
                     {
-                        m_saturationTextBox.Text = ((int)Math.Round(m_currentHsv.S * 100)).ToString();
+                        m_saturationTextBox.Text = ((int)Math.Round(m_currentHsv.S * 100)).ToString(CultureInfo.InvariantCulture);
                     }
 
                     if (m_valueTextBox != null)
                     {
-                        m_valueTextBox.Text = ((int)Math.Round(m_currentHsv.V * 100)).ToString();
+                        m_valueTextBox.Text = ((int)Math.Round(m_currentHsv.V * 100)).ToString(CultureInfo.InvariantCulture);
                     }
                 }
 
@@ -548,7 +547,7 @@ namespace Avalonia.ColorPicker
                 {
                     if (m_alphaTextBox != null)
                     {
-                        m_alphaTextBox.Text = ((int)Math.Round(m_currentAlpha * 100)).ToString() + "%";
+                        m_alphaTextBox.Text = ((int)Math.Round(m_currentAlpha * 100)).ToString(CultureInfo.InvariantCulture) + "%";
                     }
                 }
 
@@ -603,8 +602,7 @@ namespace Avalonia.ColorPicker
             {
                 // Since the ColorPicker is arranged vertically, the ColorSpectrum's height can be whatever we want it to be -
                 // the width is the limiting factor.  Since we want it to always be a square, we'll set its height to whatever its width is.
-                if (args.NewValue is double newValue
-                    && args.OldValue is double oldValue)
+                if (args.NewValue is double newValue)
                 {
                     ((ColorSpectrum)sender).Height = newValue;
                 }
@@ -769,7 +767,7 @@ namespace Avalonia.ColorPicker
             else
             {
                 m_isFocusedTextBoxValid = true;
-                UpdateColor(ApplyraintsToRgbColor(GetRgbColorFromTextBoxes()), ColorUpdateReason.RgbTextBoxChanged);
+                UpdateColor(ApplyConstraintsToRgbColor(GetRgbColorFromTextBoxes()), ColorUpdateReason.RgbTextBoxChanged);
             }
         }
 
@@ -930,7 +928,7 @@ namespace Avalonia.ColorPicker
                 }
 
                 m_isFocusedTextBoxValid = true;
-                UpdateColor(ApplyraintsToRgbColor(rgbValue), ColorUpdateReason.HexTextBoxChanged);
+                UpdateColor(ApplyConstraintsToRgbColor(rgbValue), ColorUpdateReason.HexTextBoxChanged);
                 UpdateColor(alphaValue, ColorUpdateReason.HexTextBoxChanged);
             }
             else
@@ -941,25 +939,25 @@ namespace Avalonia.ColorPicker
 
         private Rgb GetRgbColorFromTextBoxes()
         {
-            // At this point textboxes is not null and has valid number input
-            return new Rgb(
-                int.Parse(m_redTextBox!.Text.ToString()) / 255.0,
-                int.Parse(m_greenTextBox!.Text.ToString()) / 255.0,
-                int.Parse(m_blueTextBox!.Text.ToString()) / 255.0);
+            _ = int.TryParse(m_redTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var redValue);
+            _ = int.TryParse(m_greenTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var greenValue);
+            _ = int.TryParse(m_blueTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var blueValue);
+
+            return new Rgb(redValue / 255.0, greenValue / 255.0, blueValue / 255.0);
         }
 
         private Hsv GetHsvColorFromTextBoxes()
         {
-            // At this point textboxes is not null and has valid number input
-            return new Hsv(
-                int.Parse(m_hueTextBox!.Text.ToString()),
-                int.Parse(m_saturationTextBox!.Text.ToString()) / 100.0,
-                int.Parse(m_valueTextBox!.Text.ToString()) / 100.0);
+            _ = int.TryParse(m_hueTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var hueValue);
+            _ = int.TryParse(m_saturationTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var saturationValue);
+            _ = int.TryParse(m_valueTextBox?.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var valueValue);
+
+            return new Hsv(hueValue, saturationValue / 100.0, valueValue / 100.0);
         }
 
         private string GetCurrentHexValue()
         {
-            var colorHex = ColorHelpers.ColorFromRgba(m_currentRgb, m_currentAlpha).ToUint32().ToString("x8");
+            var colorHex = ColorConversion.ColorFromRgba(m_currentRgb, m_currentAlpha).ToUint32().ToString("x8", CultureInfo.InvariantCulture);
             if (!IsAlphaEnabled)
             {
                 colorHex = colorHex.Substring(2);
@@ -967,7 +965,7 @@ namespace Avalonia.ColorPicker
             return "#" + colorHex;
         }
 
-        private Rgb ApplyraintsToRgbColor(Rgb rgb)
+        private Rgb ApplyConstraintsToRgbColor(Rgb rgb)
         {
             double minHue = MinHue;
             double maxHue = MaxHue;
@@ -976,13 +974,13 @@ namespace Avalonia.ColorPicker
             var minValue = MinValue / 100.0;
             var maxValue = MaxValue / 100.0;
 
-            var hsv = ColorHelpers.RgbToHsv(rgb);
+            var hsv = ColorConversion.RgbToHsv(rgb);
 
             hsv.H = Math.Min(Math.Max(hsv.H, minHue), maxHue);
             hsv.S = Math.Min(Math.Max(hsv.S, minSaturation), maxSaturation);
             hsv.V = Math.Min(Math.Max(hsv.V, minValue), maxValue);
 
-            return ColorHelpers.HsvToRgb(hsv);
+            return ColorConversion.HsvToRgb(hsv);
         }
 
         private void UpdateThirdDimensionSlider()
@@ -1204,9 +1202,9 @@ namespace Avalonia.ColorPicker
             }
         }
 
-        private void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)
+        private static void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)
         {
-            var rgbColor = ColorHelpers.HsvToRgb(hsvColor);
+            var rgbColor = ColorConversion.HsvToRgb(hsvColor);
 
             var color = Color.FromArgb(
                 (byte)Math.Round(alpha * 255),

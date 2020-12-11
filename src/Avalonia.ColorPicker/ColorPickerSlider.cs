@@ -214,7 +214,7 @@ namespace Avalonia.ColorPicker
                         CultureInfo.CurrentCulture,
                         localizedString,
                         sliderValue,
-                        ColorHelpers.ToDisplayName(ColorHelpers.ColorFromRgba(ColorHelpers.HsvToRgb(currentHsv))));
+                        ColorHelpers.ToDisplayName(ColorConversion.ColorFromRgba(ColorConversion.HsvToRgb(currentHsv))));
                 }
                 else
                 {

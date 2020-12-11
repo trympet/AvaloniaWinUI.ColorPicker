@@ -39,12 +39,10 @@
                          VerticalAlignment="Stretch"
                          IsHitTestVisible="False" />
               <Ellipse x:Name="PART_SpectrumEllipse"
-                       Margin="0,0,-1,-1"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                        IsHitTestVisible="False" />
               <Ellipse x:Name="PART_SpectrumOverlayEllipse"
-                       Margin="0,0,-1,-1"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                        IsHitTestVisible="False" />
@@ -63,11 +61,12 @@
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            IsHitTestVisible="False"
-                           StrokeThickness="2">
-                    <ToolTip.Tip>
-                      <ToolTip x:Name="PART_ColorNameToolTip"
-                               VerticalOffset="20" />
-                    </ToolTip.Tip>
+                           StrokeThickness="2"
+                           ToolTip.VerticalOffset="-20"
+                           ToolTip.Placement="Top">
+                    <!--<ToolTip.Tip>
+                      <ToolTip x:Name="PART_ColorNameToolTip" />
+                    </ToolTip.Tip>-->
                   </Ellipse>
                 </Grid>
               </Canvas>
