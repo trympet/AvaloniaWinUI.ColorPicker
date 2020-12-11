@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Globalization;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
+using Avalonia.Themes.Fluent;
 using Avalonia.VisualTree;
 
 namespace Avalonia.ColorPicker.Sample.Views
 {
-    public class ColorPickerPage : UserControl
+    [GenerateTypedNameReferences]
+    public partial class ColorPickerPage : UserControl
     {
         private ToolTip? colorNameToolTip;
         private Rectangle? spectrumRectangle;
@@ -19,35 +23,6 @@ namespace Avalonia.ColorPicker.Sample.Views
         private Panel? selectionEllipsePanel;
         private Ellipse? selectionEllipse;
         private Button? moreButton;
-
-        public ColorPicker ColorPicker => this.FindControl<ColorPicker>("ColorPicker");
-        public TextBlock CurrentlyFocusedElementTextBlock => this.FindControl<TextBlock>("CurrentlyFocusedElementTextBlock");
-        public Rectangle ColorFromEventRectangle => this.FindControl<Rectangle>("ColorFromEventRectangle");
-        public TextBlock SelectedColorNameTextBlock => this.FindControl<TextBlock>("SelectedColorNameTextBlock");
-        public TextBlock RedTextBlock => this.FindControl<TextBlock>("RedTextBlock");
-        public TextBlock GreenTextBlock => this.FindControl<TextBlock>("GreenTextBlock");
-        public TextBlock BlueTextBlock => this.FindControl<TextBlock>("BlueTextBlock");
-        public TextBlock AlphaTextBlock => this.FindControl<TextBlock>("AlphaTextBlock");
-        public TextBlock OldRedTextBlock => this.FindControl<TextBlock>("OldRedTextBlock");
-        public TextBlock OldGreenTextBlock => this.FindControl<TextBlock>("OldGreenTextBlock");
-        public TextBlock OldBlueTextBlock => this.FindControl<TextBlock>("OldBlueTextBlock");
-        public TextBlock OldAlphaTextBlock => this.FindControl<TextBlock>("OldAlphaTextBlock");
-        public TextBlock PreviousRedTextBlock => this.FindControl<TextBlock>("PreviousRedTextBlock");
-        public TextBlock PreviousGreenTextBlock => this.FindControl<TextBlock>("PreviousGreenTextBlock");
-        public TextBlock PreviousBlueTextBlock => this.FindControl<TextBlock>("PreviousBlueTextBlock");
-        public TextBlock PreviousAlphaTextBlock => this.FindControl<TextBlock>("PreviousAlphaTextBlock");
-        public TextBlock EllipseRedTextBlock => this.FindControl<TextBlock>("EllipseRedTextBlock");
-        public TextBlock EllipseGreenTextBlock => this.FindControl<TextBlock>("EllipseGreenTextBlock");
-        public TextBlock EllipseBlueTextBlock => this.FindControl<TextBlock>("EllipseBlueTextBlock");
-        public TextBlock EllipseAlphaTextBlock => this.FindControl<TextBlock>("EllipseAlphaTextBlock");
-        public TextBlock MoreButtonForegroundTextBlock => this.FindControl<TextBlock>("MoreButtonForegroundTextBlock");
-        public TextBlock MoreButtonBackgroundTextBlock => this.FindControl<TextBlock>("MoreButtonBackgroundTextBlock");
-        public TextBlock MoreButtonBorderBrushTextBlock => this.FindControl<TextBlock>("MoreButtonBorderBrushTextBlock");
-        public CheckBox ColorSpectrumLoadedCheckBox => this.FindControl<CheckBox>("ColorSpectrumLoadedCheckBox");
-        public TextBlock WidthTextBlock => this.FindControl<TextBlock>("WidthTextBlock");
-        public TextBlock HeightTextBlock => this.FindControl<TextBlock>("HeightTextBlock");
-        public TextBlock EllipseXTextBlock => this.FindControl<TextBlock>("EllipseXTextBlock");
-        public TextBlock EllipseYTextBlock => this.FindControl<TextBlock>("EllipseYTextBlock");
 
         public ColorPickerPage()
         {
@@ -71,10 +46,10 @@ namespace Avalonia.ColorPicker.Sample.Views
             previousColorRectangle = null;
             moreButton = null;
 
-            RedTextBlock.Text = ColorPicker.Color.R.ToString();
-            GreenTextBlock.Text = ColorPicker.Color.G.ToString();
-            BlueTextBlock.Text = ColorPicker.Color.B.ToString();
-            AlphaTextBlock.Text = ColorPicker.Color.A.ToString();
+            RedTextBlock.Text = ColorPicker.Color.R.ToString(CultureInfo.InvariantCulture);
+            GreenTextBlock.Text = ColorPicker.Color.G.ToString(CultureInfo.InvariantCulture);
+            BlueTextBlock.Text = ColorPicker.Color.B.ToString(CultureInfo.InvariantCulture);
+            AlphaTextBlock.Text = ColorPicker.Color.A.ToString(CultureInfo.InvariantCulture);
         }
 
         private async void ColorPickerTemplateApplied(object? sender, TemplateAppliedEventArgs e)
@@ -178,10 +153,10 @@ namespace Avalonia.ColorPicker.Sample.Views
                 {
                     var previousColor = previousColorBrush.Color;
 
-                    PreviousRedTextBlock.Text = previousColor.R.ToString();
-                    PreviousGreenTextBlock.Text = previousColor.G.ToString();
-                    PreviousBlueTextBlock.Text = previousColor.B.ToString();
-                    PreviousAlphaTextBlock.Text = previousColor.A.ToString();
+                    PreviousRedTextBlock.Text = previousColor.R.ToString(CultureInfo.InvariantCulture);
+                    PreviousGreenTextBlock.Text = previousColor.G.ToString(CultureInfo.InvariantCulture);
+                    PreviousBlueTextBlock.Text = previousColor.B.ToString(CultureInfo.InvariantCulture);
+                    PreviousAlphaTextBlock.Text = previousColor.A.ToString(CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -201,10 +176,10 @@ namespace Avalonia.ColorPicker.Sample.Views
                 {
                     var selectionEllipseColor = selectionEllipseStrokeBrush.Color;
 
-                    EllipseRedTextBlock.Text = selectionEllipseColor.R.ToString();
-                    EllipseGreenTextBlock.Text = selectionEllipseColor.G.ToString();
-                    EllipseBlueTextBlock.Text = selectionEllipseColor.B.ToString();
-                    EllipseAlphaTextBlock.Text = selectionEllipseColor.A.ToString();
+                    EllipseRedTextBlock.Text = selectionEllipseColor.R.ToString(CultureInfo.InvariantCulture);
+                    EllipseGreenTextBlock.Text = selectionEllipseColor.G.ToString(CultureInfo.InvariantCulture);
+                    EllipseBlueTextBlock.Text = selectionEllipseColor.B.ToString(CultureInfo.InvariantCulture);
+                    EllipseAlphaTextBlock.Text = selectionEllipseColor.A.ToString(CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -222,8 +197,8 @@ namespace Avalonia.ColorPicker.Sample.Views
                 var ellipseX = Canvas.GetLeft(selectionEllipsePanel) + (selectionEllipsePanel.Width / 2);
                 var ellipseY = Canvas.GetTop(selectionEllipsePanel) + (selectionEllipsePanel.Height / 2);
 
-                EllipseXTextBlock.Text = Math.Round(ellipseX).ToString();
-                EllipseYTextBlock.Text = Math.Round(ellipseY).ToString();
+                EllipseXTextBlock.Text = Math.Round(ellipseX).ToString(CultureInfo.InvariantCulture);
+                EllipseYTextBlock.Text = Math.Round(ellipseY).ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -246,8 +221,8 @@ namespace Avalonia.ColorPicker.Sample.Views
         {
             if (colorSpectrumInputTarget != null)
             {
-                WidthTextBlock.Text = colorSpectrumInputTarget.Bounds.Width.ToString();
-                HeightTextBlock.Text = colorSpectrumInputTarget.Bounds.Height.ToString();
+                WidthTextBlock.Text = colorSpectrumInputTarget.Bounds.Width.ToString(CultureInfo.InvariantCulture);
+                HeightTextBlock.Text = colorSpectrumInputTarget.Bounds.Height.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -297,22 +272,25 @@ namespace Avalonia.ColorPicker.Sample.Views
         {
             ColorFromEventRectangle.Fill = new SolidColorBrush(args.NewColor);
 
-            RedTextBlock.Text = args.NewColor.R.ToString();
-            GreenTextBlock.Text = args.NewColor.G.ToString();
-            BlueTextBlock.Text = args.NewColor.B.ToString();
-            AlphaTextBlock.Text = args.NewColor.A.ToString();
+            RedTextBlock.Text = args.NewColor.R.ToString(CultureInfo.InvariantCulture);
+            GreenTextBlock.Text = args.NewColor.G.ToString(CultureInfo.InvariantCulture);
+            BlueTextBlock.Text = args.NewColor.B.ToString(CultureInfo.InvariantCulture);
+            AlphaTextBlock.Text = args.NewColor.A.ToString(CultureInfo.InvariantCulture);
 
-            OldRedTextBlock.Text = args.OldColor.R.ToString();
-            OldGreenTextBlock.Text = args.OldColor.G.ToString();
-            OldBlueTextBlock.Text = args.OldColor.B.ToString();
-            OldAlphaTextBlock.Text = args.OldColor.A.ToString();
+            OldRedTextBlock.Text = args.OldColor.R.ToString(CultureInfo.InvariantCulture);
+            OldGreenTextBlock.Text = args.OldColor.G.ToString(CultureInfo.InvariantCulture);
+            OldBlueTextBlock.Text = args.OldColor.B.ToString(CultureInfo.InvariantCulture);
+            OldAlphaTextBlock.Text = args.OldColor.A.ToString(CultureInfo.InvariantCulture);
         }
 
         public void ThemeLightButtonClick(object? sender, RoutedEventArgs args)
         {
+            Application.Current.Styles.Clear();
+            Application.Current.Styles.Add(new FluentTheme(new Uri("avares://Avalonia.ColorPicker.Sample")) { Mode = FluentThemeMode.Light });
+            Application.Current.Styles.Add(new StyleInclude(new Uri("avares://Avalonia.ColorPicker.Sample")) { Source = new Uri("avares://Avalonia.ColorPicker/Themes/Fluent.xaml") });
+
             if (moreButton != null)
             {
-                //this.RequestedTheme = ElementTheme.Light;
                 MoreButtonBackgroundTextBlock.Text = (moreButton.Background as SolidColorBrush)?.Color.ToString();
                 MoreButtonForegroundTextBlock.Text = (moreButton.Foreground as SolidColorBrush)?.Color.ToString();
                 MoreButtonBorderBrushTextBlock.Text = (moreButton.BorderBrush as SolidColorBrush)?.Color.ToString();
@@ -321,9 +299,11 @@ namespace Avalonia.ColorPicker.Sample.Views
 
         public void ThemeDarkButtonClick(object? sender, RoutedEventArgs e)
         {
+            Application.Current.Styles.Clear();
+            Application.Current.Styles.Add(new FluentTheme(new Uri("avares://Avalonia.ColorPicker.Sample")) { Mode = FluentThemeMode.Dark });
+            Application.Current.Styles.Add(new StyleInclude(new Uri("avares://Avalonia.ColorPicker.Sample")) { Source = new Uri("avares://Avalonia.ColorPicker/Themes/Fluent.xaml") });
             if (moreButton != null)
             {
-                //this.RequestedTheme = ElementTheme.Dark;
                 MoreButtonBackgroundTextBlock.Text = (moreButton.Background as SolidColorBrush)?.Color.ToString();
                 MoreButtonForegroundTextBlock.Text = (moreButton.Foreground as SolidColorBrush)?.Color.ToString();
                 MoreButtonBorderBrushTextBlock.Text = (moreButton.BorderBrush as SolidColorBrush)?.Color.ToString();
@@ -379,14 +359,9 @@ namespace Avalonia.ColorPicker.Sample.Views
         {
             var focusedElement = e.Source as Control;
 
-            if (focusedElement != null)
-            {
-                CurrentlyFocusedElementTextBlock.Text = string.IsNullOrEmpty(focusedElement.Name) ? "(an unnamed element)" : focusedElement.Name;
-            }
-            else
-            {
-                CurrentlyFocusedElementTextBlock.Text = "(nothing)";
-            }
+            CurrentlyFocusedElementTextBlock.Text = focusedElement != null
+                ? string.IsNullOrEmpty(focusedElement.Name) ? "(an unnamed element)" : focusedElement.Name
+                : "(nothing)";
         }
 
         public void RTLCheckBoxChecked(object? sender, RoutedEventArgs e)

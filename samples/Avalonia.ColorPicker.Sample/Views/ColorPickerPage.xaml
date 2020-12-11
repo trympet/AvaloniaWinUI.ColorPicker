@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Avalonia.ColorPicker.Sample.Views.ColorPickerPage"
              Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
-             xmlns:ui="clr-namespace:Avalonia.ColorPicker;assembly=Avalonia.ColorPicker">
+             xmlns:ui="using:Avalonia.ColorPicker">
   <Grid x:Name="Root"
         Margin="12">
     <Grid.ColumnDefinitions>
@@ -17,8 +17,7 @@
       <StackPanel>
         <ui:ColorPicker x:Name="ColorPicker"
                         Width="312"
-                        IsAlphaEnabled="True"
-                        Background="#101010" />
+                        IsAlphaEnabled="True" />
         <TextBlock Text="Very large text block in order to allow scrolling."
                    Height="1000" />
       </StackPanel>

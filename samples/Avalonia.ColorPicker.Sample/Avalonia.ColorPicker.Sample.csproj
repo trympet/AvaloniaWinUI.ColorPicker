@@ -2,13 +2,19 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-preview5" />
+    <!-- Note this AdditionalFiles directive. -->
+    <AdditionalFiles Include="**\*.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-rc1" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0-rc1" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="0.1.4" />
   </ItemGroup>
 
   <ItemGroup>

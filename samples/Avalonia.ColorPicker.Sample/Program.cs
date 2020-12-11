@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Avalonia;
-
 namespace Avalonia.ColorPicker.Sample
 {
     internal class Program
@@ -13,8 +11,10 @@ namespace Avalonia.ColorPicker.Sample
         }
 
         public static AppBuilder BuildAvaloniaApp()
-            => AppBuilder.Configure<App>()
-                         .UsePlatformDetect()
-                         .LogToDebug();
+        {
+            return AppBuilder.Configure<App>()
+                .UsePlatformDetect()
+                .LogToTrace();
+        }
     }
 }
