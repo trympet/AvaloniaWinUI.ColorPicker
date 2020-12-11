@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -10,42 +11,32 @@ using Avalonia.Styling;
 
 namespace Avalonia.ColorPicker
 {
-    public class ColorPickerSlider : Slider, IStyleable
+    public partial class ColorPickerSlider : Slider, IStyleable
     {
-        public static readonly StyledProperty<ColorPickerHsvChannel> ColorChannelProperty =
-            AvaloniaProperty.Register<ColorPickerSlider, ColorPickerHsvChannel>(nameof(ColorChannel), ColorPickerHsvChannel.Value);
-
-        static ColorPickerSlider()
-        {
-            ValueProperty.Changed.AddClassHandler<ColorPickerSlider>(OnValueChanged);
-        }
-
         private ToolTip? _toolTip;
+        private Thumb? _thumb;
 
-        private static void OnValueChanged(ColorPickerSlider sender, AvaloniaPropertyChangedEventArgs args)
+        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
         {
-            if (sender._toolTip is ToolTip toolTip)
+            base.OnPropertyChanged(change);
+
+            if (change.Property == ValueProperty)
             {
-                toolTip.Content = sender.GetToolTipString();
-
-                // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
-                // so toggling IsEnabled induces it to do that without incurring any visual glitches.
-                toolTip.IsEnabled = false;
-                toolTip.IsEnabled = true;
+                OnValueChanged();
             }
-        }
-
-        public ColorPickerHsvChannel ColorChannel
-        {
-            get => GetValue(ColorChannelProperty);
-            set => SetValue(ColorChannelProperty, value);
         }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
 
-            _toolTip = e.NameScope.Find<ToolTip>("ToolTip");
+            _thumb = e.NameScope.Find<Thumb>("thumb");
+            _toolTip = e.NameScope.Find<ToolTip>("PART_ToolTip");
+
+            if (_toolTip is ToolTip toolTip)
+            {
+                toolTip.Content = GetToolTipString();
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs args)
@@ -102,10 +93,10 @@ namespace Avalonia.ColorPicker
                     break;
 
                 default:
-                    throw new NotSupportedException();
+                    throw new NotSupportedException("Invalid ColorPickerHsvChannel.");
             }
 
-            // FlowDirection is missed in Avalonia
+            // TODO: FlowDirection is missed in Avalonia
             var shouldInvertHorizontalDirection = false;
 
             var direction =
@@ -126,27 +117,14 @@ namespace Avalonia.ColorPicker
                 currentAlpha = ColorHelpers.IncrementAlphaChannel(currentAlpha, direction, amount, false /* shouldWrap */, minBound, maxBound);
             }
 
-            switch (ColorChannel)
+            Value = ColorChannel switch
             {
-                case ColorPickerHsvChannel.Hue:
-                    Value = currentHsv.H;
-                    break;
-
-                case ColorPickerHsvChannel.Saturation:
-                    Value = currentHsv.S * 100;
-                    break;
-
-                case ColorPickerHsvChannel.Value:
-                    Value = currentHsv.V * 100;
-                    break;
-
-                case ColorPickerHsvChannel.Alpha:
-                    Value = currentAlpha * 100;
-                    break;
-
-                default:
-                    throw new NotSupportedException();
-            }
+                ColorPickerHsvChannel.Hue => currentHsv.H,
+                ColorPickerHsvChannel.Saturation => currentHsv.S * 100,
+                ColorPickerHsvChannel.Value => currentHsv.V * 100,
+                ColorPickerHsvChannel.Alpha => currentAlpha * 100,
+                _ => throw new NotSupportedException("Invalid ColorPickerHsvChannel."),
+            };
 
             args.Handled = true;
         }
@@ -156,8 +134,7 @@ namespace Avalonia.ColorPicker
             if (_toolTip != null)
             {
                 _toolTip.Content = GetToolTipString();
-                _toolTip.IsEnabled = true;
-                ToolTip.SetIsOpen(this, true);
+                ToolTip.SetIsOpen(_thumb, true);
             }
         }
 
@@ -165,7 +142,27 @@ namespace Avalonia.ColorPicker
         {
             if (_toolTip != null)
             {
-                ToolTip.SetIsOpen(this, false);
+                ToolTip.SetIsOpen(_thumb, false);
+            }
+        }
+
+        private void OnValueChanged()
+        {
+            if (_toolTip is ToolTip toolTip)
+            {
+                toolTip.Content = GetToolTipString();
+
+                // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves.
+                if (ToolTip.GetIsOpen(_thumb))
+                {
+                    var oldTransitions = _toolTip.Transitions;
+                    _toolTip.Transitions = null;
+
+                    ToolTip.SetIsOpen(_thumb, false);
+                    ToolTip.SetIsOpen(_thumb, true);
+
+                    _toolTip.Transitions = oldTransitions;
+                }
             }
         }
 
@@ -180,7 +177,10 @@ namespace Avalonia.ColorPicker
 
             if (ColorChannel == ColorPickerHsvChannel.Alpha)
             {
-                return string.Format(LocalizedStrings.ToolTipStringAlphaSlider, sliderValue);
+                return string.Format(
+                    CultureInfo.CurrentCulture,
+                    LocalizedStrings.ToolTipStringAlphaSlider,
+                    sliderValue);
             }
             else
             {
@@ -207,33 +207,27 @@ namespace Avalonia.ColorPicker
                             currentHsv.V = Value / 100;
                             break;
                         default:
-                            throw new NotSupportedException();
+                            throw new NotSupportedException("Invalid ColorPickerHsvChannel.");
                     }
 
                     return string.Format(
+                        CultureInfo.CurrentCulture,
                         localizedString,
                         sliderValue,
                         ColorHelpers.ToDisplayName(ColorHelpers.ColorFromRgba(ColorHelpers.HsvToRgb(currentHsv))));
                 }
                 else
                 {
-                    string localizedString;
-                    switch (ColorChannel)
+                    var localizedString = ColorChannel switch
                     {
-                        case ColorPickerHsvChannel.Hue:
-                            localizedString = LocalizedStrings.ToolTipStringHueSliderWithoutColorName;
-                            break;
-                        case ColorPickerHsvChannel.Saturation:
-                            localizedString = LocalizedStrings.ToolTipStringSaturationSliderWithoutColorName;
-                            break;
-                        case ColorPickerHsvChannel.Value:
-                            localizedString = LocalizedStrings.ToolTipStringValueSliderWithoutColorName;
-                            break;
-                        default:
-                            throw new NotSupportedException();
-                    }
+                        ColorPickerHsvChannel.Hue => LocalizedStrings.ToolTipStringHueSliderWithoutColorName,
+                        ColorPickerHsvChannel.Saturation => LocalizedStrings.ToolTipStringSaturationSliderWithoutColorName,
+                        ColorPickerHsvChannel.Value => LocalizedStrings.ToolTipStringValueSliderWithoutColorName,
+                        _ => throw new NotSupportedException("Invalid ColorPickerHsvChannel."),
+                    };
 
                     return string.Format(
+                        CultureInfo.CurrentCulture,
                         localizedString,
                         sliderValue);
                 }

@@ -187,7 +187,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!%% opacity.
+        ///   Looks up a localized string similar to {0}% opacity.
         /// </summary>
         internal static string ToolTipStringAlphaSlider {
             get {
@@ -196,7 +196,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hue %1!u! (%2!s!).
+        ///   Looks up a localized string similar to Hue {0} ({1}).
         /// </summary>
         internal static string ToolTipStringHueSliderWithColorName {
             get {
@@ -205,7 +205,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hue %1!u!.
+        ///   Looks up a localized string similar to Hue {0}.
         /// </summary>
         internal static string ToolTipStringHueSliderWithoutColorName {
             get {
@@ -214,7 +214,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saturation %1!u! (%2!s!).
+        ///   Looks up a localized string similar to Saturation {0} ({1}).
         /// </summary>
         internal static string ToolTipStringSaturationSliderWithColorName {
             get {
@@ -223,7 +223,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saturation %1!u!.
+        ///   Looks up a localized string similar to Saturation {0}.
         /// </summary>
         internal static string ToolTipStringSaturationSliderWithoutColorName {
             get {
@@ -232,7 +232,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value %1!u! (%2!s!).
+        ///   Looks up a localized string similar to Value {0} ({1}).
         /// </summary>
         internal static string ToolTipStringValueSliderWithColorName {
             get {
@@ -241,7 +241,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value %1!u!.
+        ///   Looks up a localized string similar to Value {0}.
         /// </summary>
         internal static string ToolTipStringValueSliderWithoutColorName {
             get {
@@ -250,7 +250,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!s!, Hue %2!u!, Saturation %3!u!, Brightness %4!u!.
+        ///   Looks up a localized string similar to {0}, Hue {1}, Saturation {2}, Brightness {3}.
         /// </summary>
         internal static string ValueStringColorSpectrumWithColorName {
             get {
@@ -259,7 +259,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hue %1!u!, Saturation %2!u!, Brightness %3!u!.
+        ///   Looks up a localized string similar to Hue {0}, Saturation {1}, Brightness {2}.
         /// </summary>
         internal static string ValueStringColorSpectrumWithoutColorName {
             get {
@@ -268,7 +268,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!, %2!s!.
+        ///   Looks up a localized string similar to {0}, {1}.
         /// </summary>
         internal static string ValueStringHueSliderWithColorName {
             get {
@@ -277,7 +277,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!.
+        ///   Looks up a localized string similar to {1}.
         /// </summary>
         internal static string ValueStringHueSliderWithoutColorName {
             get {
@@ -286,7 +286,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!, %2!s!.
+        ///   Looks up a localized string similar to {0}, {1}.
         /// </summary>
         internal static string ValueStringSaturationSliderWithColorName {
             get {
@@ -295,7 +295,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!.
+        ///   Looks up a localized string similar to {1}.
         /// </summary>
         internal static string ValueStringSaturationSliderWithoutColorName {
             get {
@@ -304,7 +304,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!, %2!s!.
+        ///   Looks up a localized string similar to {0}, {1}.
         /// </summary>
         internal static string ValueStringValueSliderWithColorName {
             get {
@@ -313,7 +313,7 @@ namespace Avalonia.ColorPicker {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to %1!u!.
+        ///   Looks up a localized string similar to {0}.
         /// </summary>
         internal static string ValueStringValueSliderWithoutColorName {
             get {

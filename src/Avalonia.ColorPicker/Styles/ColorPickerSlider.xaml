@@ -103,7 +103,13 @@
                            Padding="0"
                            DataContext="{TemplateBinding Value}"
                            Height="{DynamicResource SliderHorizontalThumbHeight}"
-                           Width="{DynamicResource SliderHorizontalThumbWidth}" />
+                           Width="{DynamicResource SliderHorizontalThumbWidth}"
+                           ToolTip.Placement="Top"
+                           ToolTip.VerticalOffset="-20">
+                      <ToolTip.Tip>
+                        <ToolTip x:Name="PART_ToolTip" IsHitTestVisible="False" Focusable="False" />
+                      </ToolTip.Tip>
+                    </Thumb>
                   </Track>
                 </Grid>
               </Grid>

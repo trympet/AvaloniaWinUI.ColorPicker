@@ -174,63 +174,63 @@
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ToolTipStringAlphaSlider" xml:space="preserve">
-    <value>%1!u!%% opacity</value>
+    <value>{0}% opacity</value>
     <comment>The string to display in the tool tip for the alpha slider. %1 is the alpha value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithColorName" xml:space="preserve">
-    <value>Hue %1!u! (%2!s!)</value>
+    <value>Hue {0} ({1})</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're including the friendly color name. %1 is the hue value between 0 and 359; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithoutColorName" xml:space="preserve">
-    <value>Hue %1!u!</value>
+    <value>Hue {0}</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're not including the friendly color name. %1 is the hue value between 0 and 359.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithColorName" xml:space="preserve">
-    <value>Saturation %1!u! (%2!s!)</value>
+    <value>Saturation {0} ({1})</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're including the friendly color name. %1 is the saturation value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithoutColorName" xml:space="preserve">
-    <value>Saturation %1!u!</value>
+    <value>Saturation {0}</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're not including the friendly color name. %1 is the saturation value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithColorName" xml:space="preserve">
-    <value>Value %1!u! (%2!s!)</value>
+    <value>Value {0} ({1})</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling value and we're including the friendly color name. %1 is the value value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithoutColorName" xml:space="preserve">
-    <value>Value %1!u!</value>
+    <value>Value {0}</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling value and we're not including the friendly color name. %1 is the value value between 0 and 100.</comment>
   </data>
   <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
-    <value>%1!s!, Hue %2!u!, Saturation %3!u!, Brightness %4!u!</value>
+    <value>{0}, Hue {1}, Saturation {2}, Brightness {3}</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
-    <value>Hue %1!u!, Saturation %2!u!, Brightness %3!u!</value>
+    <value>Hue {0}, Saturation {1}, Brightness {2}</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
-    <value>%1!u!, %2!s!</value>
+    <value>{0}, {1}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling hue and we're including the friendly color name. %1 is the hue value between 0 and 359; %2 is the friendly color.</comment>
   </data>
   <data name="ValueStringHueSliderWithoutColorName" xml:space="preserve">
-    <value>%1!u!</value>
+    <value>{1}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling hue and we're not including the friendly color name. %1 is the hue value between 0 and 359.</comment>
   </data>
   <data name="ValueStringSaturationSliderWithColorName" xml:space="preserve">
-    <value>%1!u!, %2!s!</value>
+    <value>{0}, {1}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling saturation and we're including the friendly color name. %1 is the saturation value between 0 and 100; %2 is the friendly color.</comment>
   </data>
   <data name="ValueStringSaturationSliderWithoutColorName" xml:space="preserve">
-    <value>%1!u!</value>
+    <value>{1}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling saturation and we're not including the friendly color name. %1 is the saturation value between 0 and 100.</comment>
   </data>
   <data name="ValueStringValueSliderWithColorName" xml:space="preserve">
-    <value>%1!u!, %2!s!</value>
+    <value>{0}, {1}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling value and we're including the friendly color name. %1 is the brightness value between 0 and 100; %2 is the friendly color.</comment>
   </data>
   <data name="ValueStringValueSliderWithoutColorName" xml:space="preserve">
-    <value>%1!u!</value>
+    <value>{0}</value>
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling value and we're not including the friendly color name. %1 is the brightness value between 0 and 100.</comment>
   </data>
 </root>
