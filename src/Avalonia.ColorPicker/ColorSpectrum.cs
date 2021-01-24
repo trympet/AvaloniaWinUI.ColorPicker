@@ -226,7 +226,7 @@ namespace Avalonia.ColorPicker
 
         protected override void OnLostFocus(RoutedEventArgs args)
         {
-            if (m_colorNameToolTip != null)
+            if (m_colorNameToolTipHolder != null)
             {
                 ToolTip.SetIsOpen(m_colorNameToolTipHolder, false);
             }
@@ -660,6 +660,7 @@ namespace Avalonia.ColorPicker
 
             // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves.
             if (m_colorNameToolTip != null
+                && m_colorNameToolTipHolder != null
                 && ToolTip.GetIsOpen(m_colorNameToolTipHolder))
             {
                 var oldTransitions = m_colorNameToolTip.Transitions;

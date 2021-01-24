@@ -131,7 +131,8 @@ namespace Avalonia.ColorPicker
 
         protected override void OnGotFocus(GotFocusEventArgs e)
         {
-            if (_toolTip != null)
+            if (_toolTip != null
+                && _thumb != null)
             {
                 _toolTip.Content = GetToolTipString();
                 ToolTip.SetIsOpen(_thumb, true);
@@ -140,7 +141,8 @@ namespace Avalonia.ColorPicker
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            if (_toolTip != null)
+            if (_toolTip != null
+                && _thumb != null)
             {
                 ToolTip.SetIsOpen(_thumb, false);
             }
@@ -148,7 +150,8 @@ namespace Avalonia.ColorPicker
 
         private void OnValueChanged()
         {
-            if (_toolTip is ToolTip toolTip)
+            if (_toolTip is ToolTip toolTip
+                && _thumb != null)
             {
                 toolTip.Content = GetToolTipString();
 
