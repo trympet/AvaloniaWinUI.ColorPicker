@@ -7,7 +7,22 @@
 
   <Design.PreviewWith>
     <Border Padding="20">
-      <ui:ColorPicker IsMoreButtonVisible="False" />
+      <StackPanel Spacing="20">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="20">
+          <ui:ColorPicker IsMoreButtonVisible="True" />
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          IsColorSpectrumVisible="False" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Spacing="20">
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          PreviousColor="#20FF0000" />
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          IsColorSpectrumVisible="False"
+                          PreviousColor="Green" />
+        </StackPanel>
+      </StackPanel>
     </Border>
   </Design.PreviewWith>
 
@@ -62,14 +77,18 @@
                       IsVisible="{TemplateBinding IsColorPreviewVisible}"
                       RowDefinitions="*,*">
                   <Rectangle x:Name="PART_ColorPreviewRectangleCheckered"
-                             Grid.RowSpan="{Binding ElementName=PART_ColorPreviewRectangle, Path=(Grid.RowSpan)}"
-                             Grid.ColumnSpan="{Binding ElementName=PART_ColorPreviewRectangle, Path=(Grid.ColumnSpan)}"
+                             Grid.RowSpan="2"
+                             Grid.ColumnSpan="2"
                              VerticalAlignment="Stretch"
                              Fill="{StaticResource CheckeredVisualBrush}" />
                   <Rectangle x:Name="PART_ColorPreviewRectangle"
                              VerticalAlignment="Stretch" />
                   <Rectangle x:Name="PART_PreviousColorRectangle"
-                             VerticalAlignment="Stretch" />
+                             VerticalAlignment="Stretch">
+                    <Rectangle.Fill>
+                      <SolidColorBrush Color="{Binding Path=PreviousColor, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Rectangle.Fill>
+                  </Rectangle>
                   <Rectangle x:Name="PART_BorderRectangle"
                              Grid.RowSpan="2"
                              Grid.ColumnSpan="2"
@@ -144,58 +163,23 @@
                           Stretch="Uniform" />
                   </StackPanel>
                 </ToggleButton.Content>
-                <ToggleButton.Resources>
-                  <ResourceDictionary>
-                    <SolidColorBrush x:Key="ToggleButtonBackground"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrush"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForeground"
-                                     Color="{DynamicResource SystemBaseHighColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushPointerOver"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundPointerOver"
-                                     Color="{DynamicResource SystemBaseMediumColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundPressed"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushPressed"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundPressed"
-                                     Color="{DynamicResource SystemBaseMediumLowColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundDisabled"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushDisabled"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundDisabled"
-                                     Color="{DynamicResource SystemBaseMediumLowColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundChecked"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundChecked"
-                                     Color="{DynamicResource SystemBaseHighColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPointerOver"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver"
-                                     Color="{DynamicResource SystemBaseMediumColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed"
-                                     Color="{DynamicResource SystemBaseMediumLowColor}" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedDisabled"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedDisabled"
-                                     Color="Transparent" />
-                    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedDisabled"
-                                     Color="{DynamicResource SystemBaseMediumLowColor}" />
-                  </ResourceDictionary>
-                </ToggleButton.Resources>
+                <ToggleButton.Styles>
+                  <Style Selector="ToggleButton#PART_MoreButton:pressed">
+                    <Setter Property="RenderTransform" Value="none" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:pressed /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:checked /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                </ToggleButton.Styles>
               </ToggleButton>
               <Grid x:Name="PART_TextEntryGrid"
                     ColumnDefinitions="*,*"
@@ -204,17 +188,18 @@
                 <ComboBox x:Name="PART_ColorRepresentationComboBox"
                           Grid.Row="0"
                           Width="120"
+                          SelectedIndex="0"
                           Margin="0,12,0,0">
                   <ComboBoxItem x:Name="PART_RGBComboBoxItem"
-                                Content="RGB"
-                                IsSelected="True" />
+                                IsSelected="True"
+                                Content="RGB" />
                   <ComboBoxItem x:Name="PART_HSVComboBoxItem"
                                 Content="HSV" />
                 </ComboBox>
                 <StackPanel Grid.Row="1"
                             Grid.ColumnSpan="2">
                   <StackPanel x:Name="PART_ColorChannelTextInputPanel">
-                    <StackPanel x:Name="RgbPanel"
+                    <StackPanel x:Name="PART_RgbPanel"
                                 IsVisible="{Binding ElementName=PART_RGBComboBoxItem, Path=IsSelected, Mode=OneWay}">
                       <StackPanel Margin="0,12,0,0"
                                   Orientation="Horizontal">
@@ -340,10 +325,10 @@
     <Setter Property="Grid.ColumnSpan" Value="2" />
   </Style>
 
-  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ Grid#PART_ColorRepresentationComboBox">
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ ComboBox#PART_ColorRepresentationComboBox">
     <Setter Property="IsVisible" Value="False" />
   </Style>
-  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ Grid#PART_ColorChannelTextInputPanel">
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ StackPanel#PART_ColorChannelTextInputPanel">
     <Setter Property="IsVisible" Value="False" />
   </Style>
   <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=true] /template/ TextBox#PART_HexTextBox">
@@ -361,53 +346,36 @@
     <Setter Property="MaxLength" Value="9" />
   </Style>
 
-  <!--  ColorPreview Horizontal/Vertical states  -->
+
+  <Style Selector="ui|ColorPicker:not(:has-previous-color) /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+
   <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
-    <Setter Property="Grid.RowSpan" Value="1" />
+    <Setter Property="Grid.RowSpan" Value="2" />
     <Setter Property="Grid.ColumnSpan" Value="2" />
   </Style>
   <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
     <Setter Property="Grid.RowSpan" Value="2" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
+    <Setter Property="Grid.RowSpan" Value="1" />
+  </Style>
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
     <Setter Property="Grid.ColumnSpan" Value="1" />
   </Style>
 
-  <!--  PreviousColorVisibility Horizontal/Vertical states  -->
-  <!--<Style Selector="ui|ColorPicker[PreviousColor=null][IsColorSpectrumVisible=true] /template/ TextBox#PART_HexTextBox">
-    PreviousColorCollapsedVertical
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="Grid.RowSpan" Value="1" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+    <Setter Property="Grid.Row" Value="1" />
   </Style>
-  <Style Selector="ui|ColorPicker[PreviousColor=null][IsColorSpectrumVisible=false] /template/ TextBox#PART_HexTextBox">
-    PreviousColorCollapsedHorizontal
-  </Style>-->
-  <!--
-	
-    <VisualStateGroup x:Name="PreviousColorVisibility">
-      <VisualState x:Name="[IsColorSpectrumVisible=false][PreviousColor=null]PreviousColorCollapsedVertical"/>
-      <VisualState x:Name="[IsColorSpectrumVisible=true][PreviousColor]PreviousColorVisibleVertical">
-        <VisualState.Setters>
-          <Setter Target="ColorPreviewRectangle.(Grid.RowSpan)" Value="1"/>
-          <Setter Target="PreviousColorRectangle.Visibility" Value="Visible"/>
-        </VisualState.Setters>
-      </VisualState>
-      <VisualState x:Name="[IsColorSpectrumVisible=false][PreviousColor=null]PreviousColorCollapsedHorizontal">
-        <VisualState.Setters>
-          <Setter Target="PreviousColorRectangle.(Grid.Row)" Value="0"/>
-          <Setter Target="PreviousColorRectangle.(Grid.Column)" Value="1"/>
-          <Setter Target="PreviousColorRectangle.(Grid.RowSpan)" Value="2"/>
-          <Setter Target="PreviousColorRectangle.(Grid.ColumnSpan)" Value="1"/>
-        </VisualState.Setters>
-      </VisualState>
-      <VisualState x:Name="[IsColorSpectrumVisible=true][PreviousColor]PreviousColorVisibleHorizontal">
-        <VisualState.Setters>
-          <Setter Target="ColorPreviewRectangle.(Grid.ColumnSpan)" Value="1"/>
-          <Setter Target="PreviousColorRectangle.Visibility" Value="Visible"/>
-          <Setter Target="PreviousColorRectangle.(Grid.Row)" Value="0"/>
-          <Setter Target="PreviousColorRectangle.(Grid.Column)" Value="1"/>
-          <Setter Target="PreviousColorRectangle.(Grid.RowSpan)" Value="2"/>
-          <Setter Target="PreviousColorRectangle.(Grid.ColumnSpan)" Value="1"/>
-        </VisualState.Setters>
-      </VisualState>
-    </VisualStateGroup>
-	
-  </VisualStateManager.VisualStateGroups>-->
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="Grid.RowSpan" Value="2" />
+    <Setter Property="Grid.ColumnSpan" Value="1" />
+    <Setter Property="Grid.Column" Value="1" />
+  </Style>
 
 </Styles>

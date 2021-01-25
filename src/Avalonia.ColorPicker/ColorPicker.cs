@@ -240,7 +240,7 @@ namespace Avalonia.ColorPicker
             }
 
             InitializeColor();
-            UpdatePreviousColorRectangle();
+            UpdatePseudoclasses();
         }
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
@@ -278,6 +278,10 @@ namespace Avalonia.ColorPicker
             {
                 OnColorSpectrumComponentsChanged();
             }
+            else if (property == IsColorSpectrumVisibleProperty)
+            {
+                OnIsColorSpectrumVisibleChanged();
+            }
         }
 
         private void OnColorChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
@@ -311,7 +315,7 @@ namespace Avalonia.ColorPicker
 
         private void OnPreviousColorChanged()
         {
-            UpdatePreviousColorRectangle();
+            UpdatePseudoclasses();
         }
 
         private void OnIsAlphaEnabledChanged()
@@ -365,6 +369,11 @@ namespace Avalonia.ColorPicker
             SetThirdDimensionSliderChannel();
         }
 
+        private void OnIsColorSpectrumVisibleChanged()
+        {
+            UpdatePseudoclasses();
+        }
+
         private void InitializeColor()
         {
             var color = Color;
@@ -411,23 +420,6 @@ namespace Avalonia.ColorPicker
             UpdateColorControls(reason);
 
             m_updatingColor = false;
-        }
-
-        private void UpdatePreviousColorRectangle()
-        {
-            if (m_previousColorRectangle != null)
-            {
-                var previousColor = PreviousColor;
-
-                if (previousColor is Color color)
-                {
-                    m_previousColorRectangle.Fill = new SolidColorBrush(color);
-                }
-                else
-                {
-                    m_previousColorRectangle.Fill = null;
-                }
-            }
         }
 
         private void UpdateColorControls(ColorUpdateReason reason)
@@ -861,6 +853,12 @@ namespace Avalonia.ColorPicker
             {
                 m_isFocusedTextBoxValid = false;
             }
+        }
+
+        private void UpdatePseudoclasses()
+        {
+            PseudoClasses.Set(":has-previous-color", PreviousColor.HasValue);
+            PseudoClasses.Set(":spectrum-visible", IsColorSpectrumVisible);
         }
 
         private Rgb GetRgbColorFromTextBoxes()
