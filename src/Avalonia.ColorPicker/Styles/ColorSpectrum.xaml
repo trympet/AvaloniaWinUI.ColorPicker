@@ -64,9 +64,9 @@
                            StrokeThickness="2"
                            ToolTip.VerticalOffset="-20"
                            ToolTip.Placement="Top">
-                    <!--<ToolTip.Tip>
+                    <ToolTip.Tip>
                       <ToolTip x:Name="PART_ColorNameToolTip" />
-                    </ToolTip.Tip>-->
+                    </ToolTip.Tip>
                   </Ellipse>
                 </Grid>
               </Canvas>

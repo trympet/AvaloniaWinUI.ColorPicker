@@ -32,8 +32,7 @@ namespace Avalonia.ColorPicker
         private Ellipse? m_spectrumOverlayEllipse;
         private Canvas? m_inputTarget;
         private Panel? m_selectionEllipsePanel;
-        private ToolTip? m_colorNameToolTip;
-        private Control? m_colorNameToolTipHolder;
+        private Control? m_selectionEllipse;
 
         private IBitmap? m_hueRedBitmap;
         private IBitmap? m_hueYellowBitmap;
@@ -88,8 +87,7 @@ namespace Avalonia.ColorPicker
             m_spectrumOverlayEllipse = args.NameScope.Find<Ellipse>("PART_SpectrumOverlayEllipse");
             m_inputTarget = args.NameScope.Find<Canvas>("PART_InputTarget");
             m_selectionEllipsePanel = args.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
-            m_colorNameToolTipHolder = args.NameScope.Find<Control>("PART_SelectionEllipse");
-            m_colorNameToolTip = ToolTip.GetTip(m_colorNameToolTipHolder) as ToolTip;
+            m_selectionEllipse = args.NameScope.Find<Control>("PART_SelectionEllipse");
             if (m_layoutRoot != null)
             {
                 m_layoutRoot.GetObservable(BoundsProperty).Subscribe(_ => CreateBitmapsAndColorMap());
@@ -104,9 +102,9 @@ namespace Avalonia.ColorPicker
                 m_inputTarget.PointerReleased += OnInputTargetPointerReleased;
             }
 
-            if (m_colorNameToolTip != null)
+            if (ToolTip.GetTip(m_selectionEllipse) is ToolTip selectionEllipseTooltip)
             {
-                m_colorNameToolTip.Content = ColorHelpers.ToDisplayName(Color);
+                selectionEllipseTooltip.Content = ColorHelpers.ToDisplayName(Color);
             }
 
             if (m_hsvValues.Count == 0)
@@ -216,9 +214,9 @@ namespace Avalonia.ColorPicker
 
         protected override void OnGotFocus(GotFocusEventArgs args)
         {
-            if (m_colorNameToolTipHolder != null)
+            if (m_selectionEllipse != null)
             {
-                ToolTip.SetIsOpen(m_colorNameToolTipHolder, true);
+                ToolTip.SetIsOpen(m_selectionEllipse, true);
             }
 
             UpdatePseudoclasses();
@@ -226,9 +224,9 @@ namespace Avalonia.ColorPicker
 
         protected override void OnLostFocus(RoutedEventArgs args)
         {
-            if (m_colorNameToolTipHolder != null)
+            if (m_selectionEllipse != null)
             {
-                ToolTip.SetIsOpen(m_colorNameToolTipHolder, false);
+                ToolTip.SetIsOpen(m_selectionEllipse, false);
             }
 
             UpdatePseudoclasses();
@@ -326,9 +324,10 @@ namespace Avalonia.ColorPicker
                 var colorChangedEventArgs = new ColorChangedEventArgs(m_oldColor, newColor);
                 ColorChanged?.Invoke(this, colorChangedEventArgs);
 
-                if (m_colorNameToolTip != null)
+                if (m_selectionEllipse != null
+                    && ToolTip.GetTip(m_selectionEllipse) is ToolTip selectionEllipseTooltip)
                 {
-                    m_colorNameToolTip.Content = ColorHelpers.ToDisplayName(newColor);
+                    selectionEllipseTooltip.Content = ColorHelpers.ToDisplayName(Color);
                 }
             }
         }
@@ -657,20 +656,6 @@ namespace Avalonia.ColorPicker
 
             Canvas.SetLeft(m_selectionEllipsePanel, xPosition - (m_selectionEllipsePanel.Width / 2));
             Canvas.SetTop(m_selectionEllipsePanel, yPosition - (m_selectionEllipsePanel.Height / 2));
-
-            // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves.
-            if (m_colorNameToolTip != null
-                && m_colorNameToolTipHolder != null
-                && ToolTip.GetIsOpen(m_colorNameToolTipHolder))
-            {
-                var oldTransitions = m_colorNameToolTip.Transitions;
-                m_colorNameToolTip.Transitions = null;
-
-                ToolTip.SetIsOpen(m_colorNameToolTipHolder, false);
-                ToolTip.SetIsOpen(m_colorNameToolTipHolder, true);
-
-                m_colorNameToolTip.Transitions = oldTransitions;
-            }
 
             UpdatePseudoclasses();
         }

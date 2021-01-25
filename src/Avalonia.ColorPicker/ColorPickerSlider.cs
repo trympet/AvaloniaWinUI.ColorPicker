@@ -13,7 +13,6 @@ namespace Avalonia.ColorPicker
 {
     public partial class ColorPickerSlider : Slider, IStyleable
     {
-        private ToolTip? _toolTip;
         private Thumb? _thumb;
 
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
@@ -31,9 +30,8 @@ namespace Avalonia.ColorPicker
             base.OnApplyTemplate(e);
 
             _thumb = e.NameScope.Find<Thumb>("thumb");
-            _toolTip = e.NameScope.Find<ToolTip>("PART_ToolTip");
 
-            if (_toolTip is ToolTip toolTip)
+            if (ToolTip.GetTip(_thumb) is ToolTip toolTip)
             {
                 toolTip.Content = GetToolTipString();
             }
@@ -131,18 +129,17 @@ namespace Avalonia.ColorPicker
 
         protected override void OnGotFocus(GotFocusEventArgs e)
         {
-            if (_toolTip != null
-                && _thumb != null)
+            if (_thumb != null
+                && ToolTip.GetTip(_thumb) is ToolTip toolTip)
             {
-                _toolTip.Content = GetToolTipString();
+                toolTip.Content = GetToolTipString();
                 ToolTip.SetIsOpen(_thumb, true);
             }
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            if (_toolTip != null
-                && _thumb != null)
+            if (_thumb != null)
             {
                 ToolTip.SetIsOpen(_thumb, false);
             }
@@ -150,22 +147,10 @@ namespace Avalonia.ColorPicker
 
         private void OnValueChanged()
         {
-            if (_toolTip is ToolTip toolTip
-                && _thumb != null)
+            if (_thumb != null
+                && ToolTip.GetTip(_thumb) is ToolTip toolTip)
             {
                 toolTip.Content = GetToolTipString();
-
-                // ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves.
-                if (ToolTip.GetIsOpen(_thumb))
-                {
-                    var oldTransitions = _toolTip.Transitions;
-                    _toolTip.Transitions = null;
-
-                    ToolTip.SetIsOpen(_thumb, false);
-                    ToolTip.SetIsOpen(_thumb, true);
-
-                    _toolTip.Transitions = oldTransitions;
-                }
             }
         }
 
