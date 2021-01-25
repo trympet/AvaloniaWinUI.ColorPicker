@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
-using System.Threading;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -44,22 +42,14 @@ namespace Avalonia.ColorPicker
         // Template parts
         private ColorSpectrum? m_colorSpectrum;
 
-        private Grid? m_colorPreviewRectangleGrid;
         private Rectangle? m_colorPreviewRectangle;
         private Rectangle? m_previousColorRectangle;
-        private ImageBrush? m_colorPreviewRectangleCheckeredBackgroundImageBrush;
-
-        private CancellationTokenSource? m_createColorPreviewRectangleCheckeredBackgroundBitmapCancellationTokenSource;
 
         private ColorPickerSlider? m_thirdDimensionSlider;
         private LinearGradientBrush? m_thirdDimensionSliderGradientBrush;
 
         private ColorPickerSlider? m_alphaSlider;
         private LinearGradientBrush? m_alphaSliderGradientBrush;
-        private Rectangle? m_alphaSliderBackgroundRectangle;
-        private ImageBrush? m_alphaSliderCheckeredBackgroundImageBrush;
-
-        private CancellationTokenSource? m_alphaSliderCheckeredBackgroundBitmapCancellationTokenSource;
 
         private ToggleButton? m_moreButton;
         private TextBlock? m_moreButtonLabel;
@@ -81,8 +71,6 @@ namespace Avalonia.ColorPicker
         private TextBlock? m_valueLabel;
         private TextBlock? m_alphaLabel;
 
-        private SolidColorBrush? m_checkerColorBrush;
-
         public ColorPicker()
         {
 
@@ -94,18 +82,14 @@ namespace Avalonia.ColorPicker
         {
             m_colorSpectrum = args.NameScope.Get<ColorSpectrum>("PART_ColorSpectrum");
 
-            m_colorPreviewRectangleGrid = args.NameScope.Get<Grid>("PART_ColorPreviewRectangleGrid");
             m_colorPreviewRectangle = args.NameScope.Get<Rectangle>("PART_ColorPreviewRectangle");
             m_previousColorRectangle = args.NameScope.Get<Rectangle>("PART_PreviousColorRectangle");
-            m_colorPreviewRectangleCheckeredBackgroundImageBrush = args.NameScope.Get<Rectangle>("PART_ColorPreviewRectangleCheckered")?.Fill as ImageBrush;
 
             m_thirdDimensionSlider = args.NameScope.Get<ColorPickerSlider>("PART_ThirdDimensionSlider");
             m_thirdDimensionSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_ThirdDimensionSliderRectangle")?.Fill as LinearGradientBrush;
 
             m_alphaSlider = args.NameScope.Get<ColorPickerSlider>("PART_AlphaSlider");
             m_alphaSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_AlphaSliderBackgroundRectangle")?.Fill as LinearGradientBrush;
-            m_alphaSliderBackgroundRectangle = args.NameScope.Get<Rectangle>("PART_AlphaSliderBackgroundRectangle");
-            m_alphaSliderCheckeredBackgroundImageBrush = args.NameScope.Get<Rectangle>("PART_AlphaSliderCheckeredRectangle")?.Fill as ImageBrush;
 
             m_moreButton = args.NameScope.Get<ToggleButton>("PART_MoreButton");
 
@@ -126,20 +110,10 @@ namespace Avalonia.ColorPicker
             m_valueLabel = args.NameScope.Get<TextBlock>("PART_ValueLabel");
             m_alphaLabel = args.NameScope.Get<TextBlock>("PART_AlphaLabel");
 
-            if (Resources.TryGetResource("CheckerColorBrush", out var checkerColorBrush))
-            {
-                m_checkerColorBrush = checkerColorBrush as SolidColorBrush;
-            }
-
             if (m_colorSpectrum != null)
             {
                 m_colorSpectrum.ColorChanged += OnColorSpectrumColorChanged;
                 m_colorSpectrum.PropertyChanged += OnColorSpectrumPropertyChanged;
-            }
-
-            if (m_colorPreviewRectangleGrid != null)
-            {
-                m_colorPreviewRectangleGrid.PropertyChanged += OnColorPreviewRectangleGridPropertyChanged;
             }
 
             if (m_thirdDimensionSlider != null)
@@ -152,11 +126,6 @@ namespace Avalonia.ColorPicker
             {
                 m_alphaSlider.PropertyChanged += OnAlphaSliderPropertyChanged;
                 m_alphaSlider.ColorChannel = ColorPickerHsvChannel.Alpha;
-            }
-
-            if (m_alphaSliderBackgroundRectangle != null)
-            {
-                m_alphaSliderBackgroundRectangle.PropertyChanged += OnAlphaSliderBackgroundRectanglePropertyChanged;
             }
 
             if (m_moreButton != null)
@@ -272,13 +241,6 @@ namespace Avalonia.ColorPicker
                 m_alphaLabel.Text = LocalizedStrings.TextAlphaLabel;
             }
 
-            if (m_checkerColorBrush != null)
-            {
-                m_checkerColorBrush.PropertyChanged += OnCheckerPropertyChanged;
-            }
-
-            CreateColorPreviewCheckeredBackground();
-            CreateAlphaSliderCheckeredBackground();
             InitializeColor();
             UpdatePreviousColorRectangle();
         }
@@ -606,40 +568,6 @@ namespace Avalonia.ColorPicker
                 {
                     ((ColorSpectrum)sender).Height = newValue;
                 }
-            }
-        }
-
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs args)
-        {
-            // If we're in the middle of creating image bitmaps while being unloaded,
-            // we'll want to synchronously cancel it so we don't have any asynchronous actions
-            // lingering beyond our lifetime.
-            m_createColorPreviewRectangleCheckeredBackgroundBitmapCancellationTokenSource?.Cancel();
-            m_alphaSliderCheckeredBackgroundBitmapCancellationTokenSource?.Cancel();
-        }
-
-        private void OnCheckerPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
-        {
-            if (args.Property == SolidColorBrush.ColorProperty)
-            {
-                CreateColorPreviewCheckeredBackground();
-                CreateAlphaSliderCheckeredBackground();
-            }
-        }
-
-        private void OnColorPreviewRectangleGridPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
-        {
-            if (args.Property == BoundsProperty)
-            {
-                CreateColorPreviewCheckeredBackground();
-            }
-        }
-
-        private void OnAlphaSliderBackgroundRectanglePropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
-        {
-            if (args.Property == BoundsProperty)
-            {
-                CreateAlphaSliderCheckeredBackground();
             }
         }
 
@@ -1140,68 +1068,6 @@ namespace Avalonia.ColorPicker
             AddGradientStop(m_alphaSliderGradientBrush, 1.0, m_currentHsv, 1.0);
         }
 
-        private async void CreateColorPreviewCheckeredBackground()
-        {
-            if (Design.IsDesignMode)
-            {
-                return;
-            }
-
-            if (m_colorPreviewRectangleGrid != null)
-            {
-                if (m_colorPreviewRectangleCheckeredBackgroundImageBrush != null)
-                {
-                    var width = (int)Math.Round(m_colorPreviewRectangleGrid.Bounds.Width);
-                    var height = (int)Math.Round(m_colorPreviewRectangleGrid.Bounds.Height);
-                    var bgraCheckeredPixelData = new List<byte>();
-
-                    m_createColorPreviewRectangleCheckeredBackgroundBitmapCancellationTokenSource?.Cancel();
-
-                    m_createColorPreviewRectangleCheckeredBackgroundBitmapCancellationTokenSource = new CancellationTokenSource();
-                    var bitmap = await ColorHelpers
-                        .CreateCheckeredBackgroundAsync(
-                            width,
-                            height,
-                            GetCheckerColor(),
-                            bgraCheckeredPixelData,
-                            m_createColorPreviewRectangleCheckeredBackgroundBitmapCancellationTokenSource.Token)
-                        .ConfigureAwait(true);
-                    m_colorPreviewRectangleCheckeredBackgroundImageBrush.Source = bitmap;
-                }
-            }
-        }
-
-        private async void CreateAlphaSliderCheckeredBackground()
-        {
-            if (Design.IsDesignMode)
-            {
-                return;
-            }
-
-            if (m_alphaSliderBackgroundRectangle != null)
-            {
-                if (m_alphaSliderCheckeredBackgroundImageBrush != null)
-                {
-                    var width = (int)Math.Round(m_alphaSliderBackgroundRectangle.Bounds.Width);
-                    var height = (int)Math.Round(m_alphaSliderBackgroundRectangle.Bounds.Height);
-                    var bgraCheckeredPixelData = new List<byte>();
-
-                    m_alphaSliderCheckeredBackgroundBitmapCancellationTokenSource?.Cancel();
-
-                    m_alphaSliderCheckeredBackgroundBitmapCancellationTokenSource = new CancellationTokenSource();
-                    var bitmap = await ColorHelpers
-                        .CreateCheckeredBackgroundAsync(
-                            width,
-                            height,
-                            GetCheckerColor(),
-                            bgraCheckeredPixelData,
-                            m_alphaSliderCheckeredBackgroundBitmapCancellationTokenSource.Token)
-                        .ConfigureAwait(true);
-                    m_alphaSliderCheckeredBackgroundImageBrush.Source = bitmap;
-                }
-            }
-        }
-
         private static void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)
         {
             var rgbColor = ColorConversion.HsvToRgb(hsvColor);
@@ -1214,24 +1080,6 @@ namespace Avalonia.ColorPicker
             var stop = new GradientStop(color, offset);
 
             brush.GradientStops.Add(stop);
-        }
-
-        private Color GetCheckerColor()
-        {
-            if (m_checkerColorBrush != null)
-            {
-                return m_checkerColorBrush.Color;
-            }
-            else
-            {
-                if (Resources.TryGetResource("SystemListLowColor", out var checkerColorAsObject)
-                    && checkerColorAsObject is Color checkerColor)
-                {
-                    return checkerColor;
-                }
-            }
-
-            return default;
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -24,8 +22,6 @@ namespace Avalonia.ColorPicker
 
     internal static class ColorHelpers
     {
-        private const int CheckerSize = 4;
-
         internal static string ToDisplayName(Color color)
         {
             return color.ToString();
@@ -376,73 +372,6 @@ namespace Avalonia.ColorPicker
             }
 
             return bitmap;
-        }
-
-        internal static async Task<IBitmap?> CreateCheckeredBackgroundAsync(
-            int width,
-            int height,
-            Color checkerColor,
-            List<byte> bgraCheckeredPixelData,
-            CancellationToken cancellationToken)
-        {
-            if (width == 0 || height == 0)
-            {
-                return null;
-            }
-
-            bgraCheckeredPixelData.Capacity = (int)(width * height * 4);
-
-            var tcs = new TaskCompletionSource<WriteableBitmap?>();
-
-            void WorkItemHandler(CancellationToken cancellationToken)
-            {
-                for (var y = 0; y < height; y++)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    for (var x = 0; x < width; x++)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-
-                        // We want the checkered pattern to alternate both vertically and horizontally.
-                        // In order to achieve that, we'll toggle visibility of the current pixel on or off
-                        // depending on both its x- and its y-position.  If x == CheckerSize, we'll turn visibility off,
-                        // but then if y == CheckerSize, we'll turn it back on.
-                        // The below is a shorthand for the above intent.
-                        var pixelShouldBeBlank = ((x / CheckerSize) + (y / CheckerSize)) % 2 == 0;
-
-                        if (pixelShouldBeBlank)
-                        {
-                            bgraCheckeredPixelData.Add(0);
-                            bgraCheckeredPixelData.Add(0);
-                            bgraCheckeredPixelData.Add(0);
-                            bgraCheckeredPixelData.Add(0);
-                        }
-                        else
-                        {
-                            bgraCheckeredPixelData.Add((byte)(checkerColor.B * checkerColor.A / 255));
-                            bgraCheckeredPixelData.Add((byte)(checkerColor.G * checkerColor.A / 255));
-                            bgraCheckeredPixelData.Add((byte)(checkerColor.R * checkerColor.A / 255));
-                            bgraCheckeredPixelData.Add(checkerColor.A);
-                        }
-                    }
-                }
-            }
-
-            await Task.Run(() => WorkItemHandler(cancellationToken), cancellationToken).ConfigureAwait(true);
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            return CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
         }
     }
 }

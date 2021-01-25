@@ -14,8 +14,22 @@
   <Styles.Resources>
     <StreamGeometry x:Key="ColorPickerMoreButtonCollapsPathData">M0,9 L10,0 20,9 19,10 10,2 1,10 z</StreamGeometry>
     <StreamGeometry x:Key="ColorPickerMoreButtonExpandPathData">M0,1 L10,10 20,1 19,0 10,8 1,0 z</StreamGeometry>
-    <SolidColorBrush x:Key="CheckerColorBrush"
-                     Color="{DynamicResource SystemListLowColor}" />
+    <VisualBrush x:Key="CheckeredVisualBrush"
+                 TileMode="Tile"
+                 Stretch="Uniform"
+                 DestinationRect="0,0,8,8">
+      <VisualBrush.Visual>
+        <DrawingPresenter Width="8"
+                          Height="8">
+          <DrawingGroup>
+            <GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z"
+                             Brush="Transparent" />
+            <GeometryDrawing Geometry="M0,1 L2,1 2,2, 1,2 1,0 0,0Z"
+                             Brush="{StaticResource SystemListLowColor}" />
+          </DrawingGroup>
+        </DrawingPresenter>
+      </VisualBrush.Visual>
+    </VisualBrush>
   </Styles.Resources>
 
   <Style Selector="ui|ColorPicker">
@@ -50,11 +64,8 @@
                   <Rectangle x:Name="PART_ColorPreviewRectangleCheckered"
                              Grid.RowSpan="{Binding ElementName=PART_ColorPreviewRectangle, Path=(Grid.RowSpan)}"
                              Grid.ColumnSpan="{Binding ElementName=PART_ColorPreviewRectangle, Path=(Grid.ColumnSpan)}"
-                             VerticalAlignment="Stretch">
-                    <Rectangle.Fill>
-                      <ImageBrush />
-                    </Rectangle.Fill>
-                  </Rectangle>
+                             VerticalAlignment="Stretch"
+                             Fill="{StaticResource CheckeredVisualBrush}" />
                   <Rectangle x:Name="PART_ColorPreviewRectangle"
                              VerticalAlignment="Stretch" />
                   <Rectangle x:Name="PART_PreviousColorRectangle"
@@ -87,11 +98,8 @@
                     IsVisible="{TemplateBinding IsAlphaSliderVisible}">
                 <Rectangle x:Name="PART_AlphaSliderCheckeredRectangle"
                            Height="11"
-                           VerticalAlignment="Center">
-                  <Rectangle.Fill>
-                    <ImageBrush />
-                  </Rectangle.Fill>
-                </Rectangle>
+                           VerticalAlignment="Center"
+                           Fill="{StaticResource CheckeredVisualBrush}" />
                 <Rectangle x:Name="PART_AlphaSliderBackgroundRectangle"
                            Height="11"
                            VerticalAlignment="Center">
