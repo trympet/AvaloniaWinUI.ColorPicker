@@ -49,7 +49,6 @@ namespace Avalonia.ColorPicker
         private LinearGradientBrush? m_thirdDimensionSliderGradientBrush;
 
         private ColorPickerSlider? m_alphaSlider;
-        private LinearGradientBrush? m_alphaSliderGradientBrush;
 
         private ToggleButton? m_moreButton;
         private TextBlock? m_moreButtonLabel;
@@ -89,7 +88,6 @@ namespace Avalonia.ColorPicker
             m_thirdDimensionSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_ThirdDimensionSliderRectangle")?.Fill as LinearGradientBrush;
 
             m_alphaSlider = args.NameScope.Get<ColorPickerSlider>("PART_AlphaSlider");
-            m_alphaSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_AlphaSliderBackgroundRectangle")?.Fill as LinearGradientBrush;
 
             m_moreButton = args.NameScope.Get<ToggleButton>("PART_MoreButton");
 
@@ -1047,25 +1045,12 @@ namespace Avalonia.ColorPicker
 
         private void UpdateAlphaSlider()
         {
-            if (m_alphaSlider == null
-                || m_alphaSliderGradientBrush == null)
+            if (m_alphaSlider == null)
             {
                 return;
             }
 
-            // Since the slider changes only one color dimension, we can use a LinearGradientBrush
-            // for its background instead of needing to manually set pixels ourselves.
-            // We'll have the gradient go between the minimum and maximum values in the case where
-            // the slider handles saturation or value, or in the case where it handles hue,
-            // we'll have it go between red, yellow, green, cyan, blue, and purple, in that order.
-            m_alphaSliderGradientBrush.GradientStops.Clear();
-
-            m_alphaSlider.Minimum = 0;
-            m_alphaSlider.Maximum = 100;
             m_alphaSlider.Value = m_currentAlpha * 100;
-
-            AddGradientStop(m_alphaSliderGradientBrush, 0.0, m_currentHsv, 0.0);
-            AddGradientStop(m_alphaSliderGradientBrush, 1.0, m_currentHsv, 1.0);
         }
 
         private static void AddGradientStop(LinearGradientBrush brush, double offset, Hsv hsvColor, double alpha)

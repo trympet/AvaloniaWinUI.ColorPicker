@@ -104,8 +104,16 @@
                            Height="11"
                            VerticalAlignment="Center">
                   <Rectangle.Fill>
-                    <LinearGradientBrush />
+                    <SolidColorBrush Color="{Binding Path=Color, RelativeSource={RelativeSource TemplatedParent}}" />
                   </Rectangle.Fill>
+                  <Rectangle.OpacityMask>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                      <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0" Color="Transparent" />
+                        <GradientStop Offset="1" Color="Black" />
+                      </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                  </Rectangle.OpacityMask>
                 </Rectangle>
                 <ui:ColorPickerSlider x:Name="PART_AlphaSlider"
                                       ColorChannel="Alpha"
