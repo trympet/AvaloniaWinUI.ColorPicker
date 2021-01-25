@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Avalonia.ColorPicker</Title>
+    <Title>AvaloniaWinUI.ColorPicker</Title>
     <Description>ColorPicker control for AvaloniaUI. Based on Microsoft.UI.Xaml control.</Description>
   </PropertyGroup>
 

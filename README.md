@@ -1,1 +1,1 @@
-# Avalonia.ColorPicker
+# AvaloniaWinUI.ColorPicker

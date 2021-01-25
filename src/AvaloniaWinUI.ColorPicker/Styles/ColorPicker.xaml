@@ -1,0 +1,381 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="using:System"
+        xmlns:ui="using:AvaloniaWinUI.ColorPicker">
+
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <StackPanel Spacing="20">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="20">
+          <ui:ColorPicker IsMoreButtonVisible="True" />
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          IsColorSpectrumVisible="False" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    Spacing="20">
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          PreviousColor="#20FF0000" />
+          <ui:ColorPicker IsMoreButtonVisible="True"
+                          IsColorSpectrumVisible="False"
+                          PreviousColor="Green" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </Design.PreviewWith>
+
+  <Styles.Resources>
+    <StreamGeometry x:Key="ColorPickerMoreButtonCollapsPathData">M0,9 L10,0 20,9 19,10 10,2 1,10 z</StreamGeometry>
+    <StreamGeometry x:Key="ColorPickerMoreButtonExpandPathData">M0,1 L10,10 20,1 19,0 10,8 1,0 z</StreamGeometry>
+    <VisualBrush x:Key="CheckeredVisualBrush"
+                 TileMode="Tile"
+                 Stretch="Uniform"
+                 DestinationRect="0,0,8,8">
+      <VisualBrush.Visual>
+        <DrawingPresenter Width="8"
+                          Height="8">
+          <DrawingGroup>
+            <GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z"
+                             Brush="Transparent" />
+            <GeometryDrawing Geometry="M0,1 L2,1 2,2, 1,2 1,0 0,0Z"
+                             Brush="{StaticResource SystemListLowColor}" />
+          </DrawingGroup>
+        </DrawingPresenter>
+      </VisualBrush.Visual>
+    </VisualBrush>
+  </Styles.Resources>
+
+  <Style Selector="ui|ColorPicker">
+    <Setter Property="MaxWidth" Value="392" />
+    <Setter Property="MinWidth" Value="312" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ui:ColorPicker">
+          <Grid Background="{TemplateBinding Background}">
+            <StackPanel>
+              <Grid x:Name="PART_ColorSpectrumGrid"
+                    ColumnDefinitions="*, Auto">
+                <ui:ColorSpectrum x:Name="PART_ColorSpectrum"
+                                  Grid.Row="0"
+                                  Grid.Column="0"
+                                  MinWidth="256"
+                                  MinHeight="256"
+                                  MaxWidth="336"
+                                  MaxHeight="336"
+                                  Components="{TemplateBinding ColorSpectrumComponents}"
+                                  MaxHue="{TemplateBinding MaxHue}"
+                                  MaxSaturation="{TemplateBinding MaxSaturation}"
+                                  MaxValue="{TemplateBinding MaxValue}"
+                                  MinHue="{TemplateBinding MinHue}"
+                                  MinSaturation="{TemplateBinding MinSaturation}"
+                                  MinValue="{TemplateBinding MinValue}"
+                                  Shape="{TemplateBinding ColorSpectrumShape}" />
+                <Grid x:Name="PART_ColorPreviewRectangleGrid"
+                      ColumnDefinitions="*,*"
+                      IsVisible="{TemplateBinding IsColorPreviewVisible}"
+                      RowDefinitions="*,*">
+                  <Rectangle x:Name="PART_ColorPreviewRectangleCheckered"
+                             Grid.RowSpan="2"
+                             Grid.ColumnSpan="2"
+                             VerticalAlignment="Stretch"
+                             Fill="{StaticResource CheckeredVisualBrush}" />
+                  <Rectangle x:Name="PART_ColorPreviewRectangle"
+                             VerticalAlignment="Stretch" />
+                  <Rectangle x:Name="PART_PreviousColorRectangle"
+                             VerticalAlignment="Stretch">
+                    <Rectangle.Fill>
+                      <SolidColorBrush Color="{Binding Path=PreviousColor, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Rectangle.Fill>
+                  </Rectangle>
+                  <Rectangle x:Name="PART_BorderRectangle"
+                             Grid.RowSpan="2"
+                             Grid.ColumnSpan="2"
+                             Stroke="{DynamicResource SystemControlForegroundListLowBrush}"
+                             StrokeThickness="2"
+                             Classes="ColorPickerBorderStyle" />
+                </Grid>
+              </Grid>
+              <Grid x:Name="PART_ThirdDimensionSliderGrid"
+                    Margin="0,12,0,0"
+                    IsVisible="{TemplateBinding IsColorSliderVisible}">
+                <Rectangle x:Name="PART_ThirdDimensionSliderRectangle"
+                           Height="11"
+                           VerticalAlignment="Center">
+                  <Rectangle.Fill>
+                    <LinearGradientBrush />
+                  </Rectangle.Fill>
+                </Rectangle>
+                <ui:ColorPickerSlider x:Name="PART_ThirdDimensionSlider"
+                                      ColorChannel="Value"
+                                      Maximum="100"
+                                      Minimum="0" />
+              </Grid>
+              <Grid x:Name="PART_AlphaSliderGrid"
+                    Margin="0,12,0,0"
+                    IsVisible="{TemplateBinding IsAlphaSliderVisible}">
+                <Rectangle x:Name="PART_AlphaSliderCheckeredRectangle"
+                           Height="11"
+                           VerticalAlignment="Center"
+                           Fill="{StaticResource CheckeredVisualBrush}" />
+                <Rectangle x:Name="PART_AlphaSliderBackgroundRectangle"
+                           Height="11"
+                           VerticalAlignment="Center">
+                  <Rectangle.Fill>
+                    <SolidColorBrush Color="{Binding Path=Color, RelativeSource={RelativeSource TemplatedParent}}" />
+                  </Rectangle.Fill>
+                  <Rectangle.OpacityMask>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                      <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0" Color="Transparent" />
+                        <GradientStop Offset="1" Color="Black" />
+                      </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                  </Rectangle.OpacityMask>
+                </Rectangle>
+                <ui:ColorPickerSlider x:Name="PART_AlphaSlider"
+                                      ColorChannel="Alpha"
+                                      Maximum="100"
+                                      Minimum="0" />
+              </Grid>
+              <ToggleButton x:Name="PART_MoreButton"
+                            MinWidth="120"
+                            MinHeight="32"
+                            Margin="0,12,0,0"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            HorizontalContentAlignment="Right"
+                            IsVisible="{TemplateBinding IsMoreButtonVisible}">
+                <ToggleButton.Content>
+                  <StackPanel Margin="0,5,0,7"
+                              HorizontalAlignment="Right"
+                              Orientation="Horizontal">
+                    <TextBlock x:Name="PART_MoreButtonLabel"
+                               VerticalAlignment="Center" />
+                    <Path x:Name="PART_MoreGlyph"
+                          Width="16"
+                          Height="8"
+                          Margin="8,0,0,0"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Fill="{TemplateBinding Foreground}"
+                          Stretch="Uniform" />
+                  </StackPanel>
+                </ToggleButton.Content>
+                <ToggleButton.Styles>
+                  <Style Selector="ToggleButton#PART_MoreButton:pressed">
+                    <Setter Property="RenderTransform" Value="none" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:pressed /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                  <Style Selector="ToggleButton#PART_MoreButton:checked /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                </ToggleButton.Styles>
+              </ToggleButton>
+              <Grid x:Name="PART_TextEntryGrid"
+                    ColumnDefinitions="*,*"
+                    IsVisible="{Binding ElementName=PART_MoreButton, Path=IsChecked, Mode=OneWay}"
+                    RowDefinitions="Auto,Auto">
+                <ComboBox x:Name="PART_ColorRepresentationComboBox"
+                          Grid.Row="0"
+                          Width="120"
+                          SelectedIndex="0"
+                          Margin="0,12,0,0">
+                  <ComboBoxItem x:Name="PART_RGBComboBoxItem"
+                                IsSelected="True"
+                                Content="RGB" />
+                  <ComboBoxItem x:Name="PART_HSVComboBoxItem"
+                                Content="HSV" />
+                </ComboBox>
+                <StackPanel Grid.Row="1"
+                            Grid.ColumnSpan="2">
+                  <StackPanel x:Name="PART_ColorChannelTextInputPanel">
+                    <StackPanel x:Name="PART_RgbPanel"
+                                IsVisible="{Binding ElementName=PART_RGBComboBoxItem, Path=IsSelected, Mode=OneWay}">
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_RedTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="255" />
+                        <TextBlock x:Name="PART_RedLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Red" />
+                      </StackPanel>
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_GreenTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="255" />
+                        <TextBlock x:Name="PART_GreenLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Green" />
+                      </StackPanel>
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_BlueTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="255" />
+                        <TextBlock x:Name="PART_BlueLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Blue" />
+                      </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="PART_HsvPanel"
+                                Grid.Row="1"
+                                IsVisible="{Binding ElementName=PART_HSVComboBoxItem, Path=IsSelected, Mode=OneWay}">
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_HueTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="0" />
+                        <TextBlock x:Name="PART_HueLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Hue" />
+                      </StackPanel>
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_SaturationTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="0" />
+                        <TextBlock x:Name="PART_SaturationLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Saturation" />
+                      </StackPanel>
+                      <StackPanel Margin="0,12,0,0"
+                                  Orientation="Horizontal">
+                        <TextBox x:Name="PART_ValueTextBox"
+                                 Width="120"
+                                 MaxLength="3"
+                                 Text="100" />
+                        <TextBlock x:Name="PART_ValueLabel"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Value" />
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                  <StackPanel x:Name="PART_AlphaPanel"
+                              Margin="0,12,0,0"
+                              IsVisible="{TemplateBinding IsAlphaTextInputVisible}"
+                              Orientation="Horizontal">
+                    <TextBox x:Name="PART_AlphaTextBox"
+                             Width="120"
+                             MaxLength="4"
+                             Text="100%" />
+                    <TextBlock x:Name="PART_AlphaLabel"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="Opacity" />
+                  </StackPanel>
+                </StackPanel>
+                <TextBox x:Name="PART_HexTextBox"
+                         Width="132"
+                         Margin="0,12,0,0"
+                         VerticalAlignment="Top"
+                         IsVisible="{TemplateBinding IsHexInputVisible}"
+                         MaxLength="7"
+                         Text="#PART_FFFFFF" />
+              </Grid>
+            </StackPanel>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style Selector="ui|ColorPicker /template/ ToggleButton#PART_MoreButton[IsChecked=false] Path#PART_MoreGlyph">
+    <Setter Property="Data" Value="{StaticResource ColorPickerMoreButtonExpandPathData}" />
+  </Style>
+  <Style Selector="ui|ColorPicker /template/ ToggleButton#PART_MoreButton[IsChecked=true] Path#PART_MoreGlyph">
+    <Setter Property="Data" Value="{StaticResource ColorPickerMoreButtonCollapsPathData}" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ ui|ColorSpectrum">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Grid#PART_ColorPreviewRectangleGrid">
+    <Setter Property="Width" Value="44" />
+    <Setter Property="Margin" Value="12,0,0,0" />
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="Grid.Row" Value="0" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Grid#PART_ColorPreviewRectangleGrid">
+    <Setter Property="Height" Value="44" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Grid.Column" Value="0" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ ComboBox#PART_ColorRepresentationComboBox">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ StackPanel#PART_ColorChannelTextInputPanel">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=true] /template/ TextBox#PART_HexTextBox">
+    <Setter Property="Grid.Column" Value="1" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorChannelTextInputVisible=false] /template/ TextBox#PART_HexTextBox">
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker[IsAlphaEnabled=false] /template/ TextBox#PART_HexTextBox">
+    <Setter Property="MaxLength" Value="7" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsAlphaEnabled=true] /template/ TextBox#PART_HexTextBox">
+    <Setter Property="MaxLength" Value="9" />
+  </Style>
+
+
+  <Style Selector="ui|ColorPicker:not(:has-previous-color) /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
+    <Setter Property="Grid.RowSpan" Value="2" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
+    <Setter Property="Grid.RowSpan" Value="2" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
+    <Setter Property="Grid.RowSpan" Value="1" />
+  </Style>
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
+    <Setter Property="Grid.ColumnSpan" Value="1" />
+  </Style>
+
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="Grid.RowSpan" Value="1" />
+    <Setter Property="Grid.ColumnSpan" Value="2" />
+    <Setter Property="Grid.Row" Value="1" />
+  </Style>
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_PreviousColorRectangle">
+    <Setter Property="Grid.RowSpan" Value="2" />
+    <Setter Property="Grid.ColumnSpan" Value="1" />
+    <Setter Property="Grid.Column" Value="1" />
+  </Style>
+
+</Styles>

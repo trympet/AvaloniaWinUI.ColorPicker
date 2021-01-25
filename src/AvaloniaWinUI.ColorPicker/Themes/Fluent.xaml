@@ -1,0 +1,7 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="using:System">
+  <StyleInclude Source="avares://AvaloniaWinUI.ColorPicker/Styles/ColorPickerSlider.xaml" />
+  <StyleInclude Source="avares://AvaloniaWinUI.ColorPicker/Styles/ColorSpectrum.xaml" />
+  <StyleInclude Source="avares://AvaloniaWinUI.ColorPicker/Styles/ColorPicker.xaml" />
+</Styles>

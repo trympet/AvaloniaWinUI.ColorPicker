@@ -1,0 +1,160 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="using:System"
+        xmlns:ui="using:AvaloniaWinUI.ColorPicker">
+
+  <Styles.Resources>
+    <StaticResource x:Key="ColorPickerSliderThumbBackground"
+                    ResourceKey="SystemControlForegroundBaseHighBrush" />
+    <StaticResource x:Key="ColorPickerSliderThumbBackgroundPointerOver"
+                    ResourceKey="SystemControlHighlightChromeAltLowBrush" />
+    <StaticResource x:Key="ColorPickerSliderThumbBackgroundPressed"
+                    ResourceKey="SystemControlForegroundChromeHighBrush" />
+    <StaticResource x:Key="ColorPickerSliderThumbBackgroundDisabled"
+                    ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
+    <StaticResource x:Key="ColorPickerSliderTrackFillDisabled"
+                    ResourceKey="SystemControlDisabledBaseLowBrush" />
+  </Styles.Resources>
+
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <ui:ColorPickerSlider Width="200"
+                            Value="40"
+                            ColorChannel="Value"
+                            Maximum="100"
+                            Minimum="0" />
+    </Border>
+  </Design.PreviewWith>
+
+  <Style Selector="ui|ColorPickerSlider">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="Transparent" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ui:ColorPickerSlider">
+          <Border BorderThickness="{TemplateBinding BorderThickness}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  CornerRadius="{DynamicResource ControlCornerRadius}">
+            <Grid Name="grid"
+                  Margin="{TemplateBinding Padding}"
+                  RowDefinitions="Auto, *">
+              <Grid x:Name="SliderContainer"
+                    Grid.Row="1">
+                <Grid.Styles>
+                  <Style Selector="TickBar">
+                    <Setter Property="ReservedSpace" Value="{Binding #PART_Track.Thumb.Bounds}" />
+                  </Style>
+                </Grid.Styles>
+                <Grid x:Name="HorizontalTemplate"
+                      MinHeight="{DynamicResource SliderHorizontalHeight}">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="{DynamicResource SliderPreContentMargin}" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="{DynamicResource SliderPostContentMargin}" />
+                  </Grid.RowDefinitions>
+                  <Track Name="PART_Track"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="3"
+                         Orientation="Horizontal">
+                    <Track.DecreaseButton>
+                      <RepeatButton Name="PART_DecreaseButton"
+                                    Background="{TemplateBinding Foreground}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                        <RepeatButton.Template>
+                          <ControlTemplate>
+                            <Grid>
+                              <Border Name="FocusTarget"
+                                      Background="Transparent"
+                                      Margin="0,-10" />
+                              <Border Name="TrackBackground"
+                                      Background="{TemplateBinding Background}"
+                                      VerticalAlignment="Stretch" />
+                            </Grid>
+                          </ControlTemplate>
+                        </RepeatButton.Template>
+                      </RepeatButton>
+                    </Track.DecreaseButton>
+                    <Track.IncreaseButton>
+                      <RepeatButton Name="PART_IncreaseButton"
+                                    Background="{TemplateBinding Background}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch">
+                        <RepeatButton.Template>
+                          <ControlTemplate>
+                            <Grid>
+                              <Border Name="FocusTarget"
+                                      Background="Transparent"
+                                      Margin="0,-10" />
+                              <Border Name="TrackBackground"
+                                      Background="{TemplateBinding Background}"
+                                      VerticalAlignment="Stretch" />
+                            </Grid>
+                          </ControlTemplate>
+                        </RepeatButton.Template>
+                      </RepeatButton>
+                    </Track.IncreaseButton>
+                    <Thumb Classes="ColorPickerSliderThumbStyle"
+                           Name="thumb"
+                           Margin="0"
+                           Padding="0"
+                           DataContext="{TemplateBinding Value}"
+                           Height="{DynamicResource SliderHorizontalThumbHeight}"
+                           Width="{DynamicResource SliderHorizontalThumbWidth}"
+                           ToolTip.Placement="Top"
+                           ToolTip.VerticalOffset="-20">
+                      <ToolTip.Tip>
+                        <ToolTip x:Name="PART_ToolTip" IsHitTestVisible="False" Focusable="False" />
+                      </ToolTip.Tip>
+                    </Thumb>
+                  </Track>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider /template/ Thumb.ColorPickerSliderThumbStyle">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource ColorPickerSliderThumbBackground}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Thumb">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{DynamicResource SliderThumbCornerRadius}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider /template/ Track#PART_Track">
+    <Setter Property="Minimum" Value="{TemplateBinding Minimum}" />
+    <Setter Property="Maximum" Value="{TemplateBinding Maximum}" />
+    <Setter Property="Value" Value="{TemplateBinding Value, Mode=TwoWay}" />
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider:pressed /template/ Thumb.ColorPickerSliderThumbStyle">
+    <Setter Property="Background" Value="{DynamicResource ColorPickerSliderThumbBackgroundPressed}" />
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider:pointerover /template/ Thumb.ColorPickerSliderThumbStyle">
+    <Setter Property="Background" Value="{DynamicResource ColorPickerSliderThumbBackgroundPointerOver}" />
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider:disabled /template/ Thumb.ColorPickerSliderThumbStyle">
+    <Setter Property="Background" Value="{DynamicResource ColorPickerSliderTrackFillDisabled}" />
+  </Style>
+
+  <Style Selector="ui|ColorPickerSlider /template/ Border#HorizontalTrackRect">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+</Styles>

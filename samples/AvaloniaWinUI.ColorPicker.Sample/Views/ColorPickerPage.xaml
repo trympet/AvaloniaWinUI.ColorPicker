@@ -1,0 +1,392 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaWinUI.ColorPicker.Sample.Views.ColorPickerPage"
+             Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+             xmlns:ui="using:AvaloniaWinUI.ColorPicker">
+  <Grid x:Name="Root"
+        Margin="12">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <!--  Sample control  -->
+    <ScrollViewer Name="ColorPickerScrollViewer"
+                  Height="500">
+      <StackPanel>
+        <ui:ColorPicker x:Name="ColorPicker"
+                        Width="312"
+                        IsAlphaEnabled="True" />
+        <TextBlock Text="Very large text block in order to allow scrolling."
+                   Height="1000" />
+      </StackPanel>
+    </ScrollViewer>
+
+    <!--  Options  -->
+    <Grid Grid.Column="1"
+          Margin="8,0,8,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <TextBlock Text="Options" />
+      <ScrollViewer Grid.Row="1"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource SystemChromeHighColor}"
+                    Padding="4">
+        <!--  Place options below  -->
+        <StackPanel Width="400">
+          <TextBlock Text="Set theme to..." />
+          <StackPanel Orientation="Horizontal">
+            <Button Name="ThemeLightButton"
+                    Content="Light"
+                    Click="ThemeLightButtonClick" />
+            <Button Name="ThemeDarkButton"
+                    Content="Dark"
+                    Click="ThemeDarkButtonClick"
+                    Margin="5,0,0,0" />
+          </StackPanel>
+          <TextBlock Text="Set Color to..." />
+          <StackPanel Orientation="Horizontal">
+            <Button Name="ColorWhiteButton"
+                    Content="White"
+                    Click="ColorWhiteButtonClick" />
+            <Button Name="ColorRedButton"
+                    Content="Red"
+                    Click="ColorRedButtonClick"
+                    Margin="5,0,0,0" />
+            <Button Name="ColorGreenButton"
+                    Content="Green"
+                    Click="ColorGreenButtonClick"
+                    Margin="5,0,0,0" />
+            <Button Name="ColorBlueButton"
+                    Content="Blue"
+                    Click="ColorBlueButtonClick"
+                    Margin="5,0,0,0" />
+          </StackPanel>
+          <TextBlock Text="Set PreviousColor to..." />
+          <StackPanel Orientation="Horizontal">
+            <Button Name="PreviousColorNullButton"
+                    Content="Null"
+                    Click="PreviousColorNullButtonClick" />
+            <Button Name="PreviousColorRedButton"
+                    Content="Red"
+                    Click="PreviousColorRedButtonClick"
+                    Margin="5,0,0,0" />
+            <Button Name="PreviousColorGreenButton"
+                    Content="Green"
+                    Click="PreviousColorGreenButtonClick"
+                    Margin="5,0,0,0" />
+            <Button Name="PreviousColorBlueButton"
+                    Content="Blue"
+                    Click="PreviousColorBlueButtonClick"
+                    Margin="5,0,0,0" />
+          </StackPanel>
+          <Button Name="PreviousColorCurrentColorButton"
+                  Content="Current color"
+                  Click="PreviousColorCurrentColorButtonClick"
+                  Margin="0,5,0,0" />
+          <CheckBox Name="AlphaEnabledCheckBox"
+                    Content="Is alpha enabled"
+                    IsChecked="{Binding IsAlphaEnabled, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="ColorSpectrumVisibleCheckBox"
+                    Content="Is color spectrum visible"
+                    IsChecked="{Binding IsColorSpectrumVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="ColorPreviewVisibleCheckBox"
+                    Content="Is color preview visible"
+                    IsChecked="{Binding IsColorPreviewVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="ColorSliderVisibleCheckBox"
+                    Content="Is color slider visible"
+                    IsChecked="{Binding IsColorSliderVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="AlphaSliderVisibleCheckBox"
+                    Content="Is alpha slider visible"
+                    IsChecked="{Binding IsAlphaSliderVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="MoreButtonVisibleCheckBox"
+                    Content="Is more button visible"
+                    IsChecked="{Binding IsMoreButtonVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="ColorChannelTextInputVisibleCheckBox"
+                    Content="Is color channel text input visible"
+                    IsChecked="{Binding IsColorChannelTextInputVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="AlphaTextInputVisibleCheckBox"
+                    Content="Is alpha text input visible"
+                    IsChecked="{Binding IsAlphaTextInputVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="HexInputVisibleCheckBox"
+                    Content="Is hex input visible"
+                    IsChecked="{Binding IsHexInputVisible, ElementName=ColorPicker, Mode=TwoWay}" />
+          <CheckBox Name="IsRtlCheckBox"
+                    Content="Is RTL"
+                    Checked="RTLCheckBoxChecked"
+                    Unchecked="RTLCheckBoxUnchecked" />
+          <TextBlock>MinimumHueSlider</TextBlock>
+          <Slider Name="MinimumHueSlider"
+                  Minimum="0"
+                  Maximum="359"
+                  Value="{Binding MinHue, ElementName=ColorPicker, Mode=TwoWay}" />
+          <TextBlock>MaximumHueSlider</TextBlock>
+          <Slider Name="MaximumHueSlider"
+                  Minimum="0"
+                  Maximum="359"
+                  Value="{Binding MaxHue, ElementName=ColorPicker, Mode=TwoWay}" />
+          <TextBlock>MinimumSaturationSlider</TextBlock>
+          <Slider Name="MinimumSaturationSlider"
+                  Minimum="0"
+                  Maximum="100"
+                  Value="{Binding MinSaturation, ElementName=ColorPicker, Mode=TwoWay}" />
+          <TextBlock>MaximumSaturationSlider</TextBlock>
+          <Slider Name="MaximumSaturationSlider"
+                  Minimum="0"
+                  Maximum="100"
+                  Value="{Binding MaxSaturation, ElementName=ColorPicker, Mode=TwoWay}" />
+          <TextBlock>MinimumValueSlider</TextBlock>
+          <Slider Name="MinimumValueSlider"
+                  Minimum="0"
+                  Maximum="100"
+                  Value="{Binding MinValue, ElementName=ColorPicker, Mode=TwoWay}" />
+          <TextBlock>MaximumValueSlider</TextBlock>
+          <Slider Name="MaximumValueSlider"
+                  Minimum="0"
+                  Maximum="100"
+                  Value="{Binding MaxValue, ElementName=ColorPicker, Mode=TwoWay}" />
+          <ComboBox Name="ColorSpectrumShapeComboBox"
+                    SelectedIndex="0">
+            <ComboBoxItem>Box</ComboBoxItem>
+            <ComboBoxItem>Ring</ComboBoxItem>
+          </ComboBox>
+          <ComboBox Name="ColorSpectrumComponentsComboBox"
+                    SelectedIndex="0">
+            <ComboBoxItem Name="ColorSpectrumComponentsHueSaturation">(Hue, Saturation)</ComboBoxItem>
+            <ComboBoxItem Name="ColorSpectrumComponentsHueValue">(Hue, Value)</ComboBoxItem>
+            <ComboBoxItem Name="ColorSpectrumComponentsSaturationHue">(Saturation, Hue)</ComboBoxItem>
+            <ComboBoxItem Name="ColorSpectrumComponentsSaturationValue">(Saturation, Value)</ComboBoxItem>
+            <ComboBoxItem Name="ColorSpectrumComponentsValueHue">(Value, Hue)</ComboBoxItem>
+            <ComboBoxItem Name="ColorSpectrumComponentsValueSaturation">(Value, Saturation)</ComboBoxItem>
+          </ComboBox>
+          <TextBlock>ControlWidthSlider</TextBlock>
+          <Slider Name="ControlWidthSlider"
+                  Minimum="312"
+                  Maximum="392"
+                  Value="{Binding Width, ElementName=ColorPicker, Mode=TwoWay}" />
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <!--  ColorPicker status  -->
+    <Grid Grid.Column="2"
+          Margin="8,0,8,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <TextBlock Text="Properties" />
+      <ScrollViewer Grid.Row="1"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource SystemChromeHighColor}"
+                    Padding="4">
+        <StackPanel Width="400">
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Currently focused element:"
+                       Margin="0,0,5,0" />
+            <TextBlock Name="CurrentlyFocusedElementTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal"
+                      Margin="0,0,10,0">
+            <TextBlock Text="Color from ColorPicker.Color:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <Rectangle Height="50"
+                       Width="50">
+              <Rectangle.Fill>
+                <SolidColorBrush Color="{Binding Color, ElementName=ColorPicker, Mode=OneWay}" />
+              </Rectangle.Fill>
+            </Rectangle>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Color from ColorPicker.ColorChanged:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <Rectangle Height="50"
+                       Width="50"
+                       x:Name="ColorFromEventRectangle" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Selected color name:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="SelectedColorNameTextBlock"
+                       VerticalAlignment="Center" />
+          </StackPanel>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Color"
+                         HorizontalAlignment="Center" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Red:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="RedTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Green:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="GreenTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Blue:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="BlueTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Alpha:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="AlphaTextBlock" />
+              </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+              <TextBlock Text="Color (old)"
+                         HorizontalAlignment="Center" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Red:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="OldRedTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Green:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="OldGreenTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Blue:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="OldBlueTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Alpha:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="OldAlphaTextBlock" />
+              </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="PreviousColor"
+                         HorizontalAlignment="Center" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Red:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="PreviousRedTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Green:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="PreviousGreenTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Blue:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="PreviousBlueTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Alpha:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="PreviousAlphaTextBlock" />
+              </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="3">
+              <TextBlock Text="SelectionEllipse"
+                         HorizontalAlignment="Center" />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Red:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="EllipseRedTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Green:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="EllipseGreenTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Blue:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="EllipseBlueTextBlock" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Alpha:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0" />
+                <TextBlock Name="EllipseAlphaTextBlock" />
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="MoreButton" />
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Foreground:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="MoreButtonForegroundTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Background:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="MoreButtonBackgroundTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="BorderBrush:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="MoreButtonBorderBrushTextBlock" />
+          </StackPanel>
+          <CheckBox Name="ColorSpectrumLoadedCheckBox"
+                    IsChecked="False"
+                    Content="ColorSpectrum loaded" />
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="ColorSpectrum width:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="WidthTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="ColorSpectrum height:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="HeightTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Ellipse x-position:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="EllipseXTextBlock" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Ellipse y-position:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+            <TextBlock Name="EllipseYTextBlock" />
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+
+</UserControl>

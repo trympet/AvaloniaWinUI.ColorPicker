@@ -1,0 +1,7 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:AvaloniaWinUI.ColorPicker.Sample.Views"
+        x:Class="AvaloniaWinUI.ColorPicker.Sample.Views.MainWindow"
+        Title="MainWindow">
+  <views:ColorPickerPage />
+</Window>
