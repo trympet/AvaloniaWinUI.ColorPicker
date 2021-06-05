@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Version>1.0.1</Version>
+    <PackageId>AvaloniaWinUI.ColorPicker.trympet</PackageId>
+    <Authors>maxkatz6</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.5" />
+    <PackageReference Include="Avalonia" Version="0.10.3" />
   </ItemGroup>
 
   <ItemGroup>
