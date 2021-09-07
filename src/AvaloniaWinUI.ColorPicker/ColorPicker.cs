@@ -50,6 +50,7 @@ namespace AvaloniaWinUI.ColorPicker
         private LinearGradientBrush? m_thirdDimensionSliderGradientBrush;
 
         private ColorPickerSlider? m_alphaSlider;
+        private LinearGradientBrush? m_alphaSliderBackgroundBrush;
 
         private ToggleButton? m_moreButton;
         private TextBlock? m_moreButtonLabel;
@@ -87,6 +88,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             m_thirdDimensionSlider = args.NameScope.Get<ColorPickerSlider>("PART_ThirdDimensionSlider");
             m_thirdDimensionSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_ThirdDimensionSliderRectangle")?.Fill as LinearGradientBrush;
+            m_alphaSliderBackgroundBrush = args.NameScope.Get<Rectangle>("PART_AlphaSliderBackgroundRectangle")?.Fill as LinearGradientBrush;
 
             m_alphaSlider = args.NameScope.Get<ColorPickerSlider>("PART_AlphaSlider");
 
@@ -419,6 +421,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             Color = ColorConversion.ColorFromRgba(m_currentRgb, m_currentAlpha);
             UpdateColorControls(reason);
+            UpdateAlphaSliderBackground();
 
             m_updatingColor = false;
         }
@@ -906,6 +909,19 @@ namespace AvaloniaWinUI.ColorPicker
             hsv.V = Math.Min(Math.Max(hsv.V, minValue), maxValue);
 
             return ColorConversion.HsvToRgb(hsv);
+        }
+
+        private void UpdateAlphaSliderBackground()
+        {
+            if (m_alphaSliderBackgroundBrush is null)
+            {
+                return;
+            }
+
+            m_alphaSliderBackgroundBrush.GradientStops.Clear();
+            m_alphaSliderBackgroundBrush.GradientStops.Add(new GradientStop(Colors.Transparent, 0));
+            var color = Color.FromRgb(Color.R, Color.G, Color.B);
+            m_alphaSliderBackgroundBrush.GradientStops.Add(new GradientStop(color, 1));
         }
 
         private void UpdateThirdDimensionSlider()
