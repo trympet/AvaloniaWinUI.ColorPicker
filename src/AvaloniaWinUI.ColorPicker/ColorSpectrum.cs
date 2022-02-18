@@ -75,6 +75,14 @@ namespace AvaloniaWinUI.ColorPicker
 
             m_hsvValues = new List<Hsv>();
         }
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            var originalMeasure = base.MeasureOverride(availableSize);
+            var minDimension = Math.Min(MaxWidth, Math.Min(MaxHeight, originalMeasure.IsDefault
+                ? double.PositiveInfinity
+                : Math.Min(originalMeasure.Width, originalMeasure.Height)));
+            return new Size(minDimension, minDimension);
+        }
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs args)
         {
