@@ -43,8 +43,8 @@ namespace AvaloniaWinUI.ColorPicker
         // Template parts
         private ColorSpectrum? m_colorSpectrum;
 
-        private Rectangle? m_colorPreviewRectangle;
-        private Rectangle? m_previousColorRectangle;
+        private Border? m_colorPreviewRectangle;
+        private Border? m_previousColorRectangle;
 
         private ColorPickerSlider? m_thirdDimensionSlider;
         private LinearGradientBrush? m_thirdDimensionSliderGradientBrush;
@@ -83,12 +83,12 @@ namespace AvaloniaWinUI.ColorPicker
         {
             m_colorSpectrum = args.NameScope.Get<ColorSpectrum>("PART_ColorSpectrum");
 
-            m_colorPreviewRectangle = args.NameScope.Get<Rectangle>("PART_ColorPreviewRectangle");
-            m_previousColorRectangle = args.NameScope.Get<Rectangle>("PART_PreviousColorRectangle");
+            m_colorPreviewRectangle = args.NameScope.Get<Border>("PART_ColorPreviewRectangle");
+            m_previousColorRectangle = args.NameScope.Get<Border>("PART_PreviousColorRectangle");
 
             m_thirdDimensionSlider = args.NameScope.Get<ColorPickerSlider>("PART_ThirdDimensionSlider");
-            m_thirdDimensionSliderGradientBrush = args.NameScope.Get<Rectangle>("PART_ThirdDimensionSliderRectangle")?.Fill as LinearGradientBrush;
-            m_alphaSliderBackgroundBrush = args.NameScope.Get<Rectangle>("PART_AlphaSliderBackgroundRectangle")?.Fill as LinearGradientBrush;
+            m_thirdDimensionSliderGradientBrush = args.NameScope.Get<Border>("PART_ThirdDimensionSliderRectangle")?.Background as LinearGradientBrush;
+            m_alphaSliderBackgroundBrush = args.NameScope.Get<Border>("PART_AlphaSliderBackgroundRectangle")?.Background as LinearGradientBrush;
 
             m_alphaSlider = args.NameScope.Get<ColorPickerSlider>("PART_AlphaSlider");
 
@@ -446,7 +446,7 @@ namespace AvaloniaWinUI.ColorPicker
             {
                 var color = Color;
 
-                m_colorPreviewRectangle.Fill = new SolidColorBrush(color);
+                m_colorPreviewRectangle.Background = new SolidColorBrush(color);
             }
 
 

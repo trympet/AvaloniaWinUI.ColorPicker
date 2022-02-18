@@ -16,6 +16,8 @@ namespace AvaloniaWinUI.ColorPicker
     {
         private Thumb? _thumb;
 
+        Type IStyleable.StyleKey => typeof(Slider);
+
         protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
         {
             base.OnPropertyChanged(change);

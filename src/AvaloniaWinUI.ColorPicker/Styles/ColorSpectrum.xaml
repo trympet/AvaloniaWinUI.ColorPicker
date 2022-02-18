@@ -16,7 +16,7 @@
 
   <Style Selector="Shape.ColorPickerBorderStyle">
     <Setter Property="Stroke" Value="{DynamicResource SystemControlForegroundListLowBrush}" />
-    <Setter Property="StrokeThickness" Value="2" />
+    <Setter Property="StrokeThickness" Value="1" />
   </Style>
 
   <Style Selector="ui|ColorSpectrum">

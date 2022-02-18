@@ -57,80 +57,88 @@
             <StackPanel>
               <Grid x:Name="PART_ColorSpectrumGrid"
                     ColumnDefinitions="*, Auto">
-                <ui:ColorSpectrum x:Name="PART_ColorSpectrum"
-                                  Grid.Row="0"
-                                  Grid.Column="0"
-                                  MinWidth="256"
-                                  MinHeight="256"
-                                  MaxWidth="336"
-                                  MaxHeight="336"
-                                  Components="{TemplateBinding ColorSpectrumComponents}"
-                                  MaxHue="{TemplateBinding MaxHue}"
-                                  MaxSaturation="{TemplateBinding MaxSaturation}"
-                                  MaxValue="{TemplateBinding MaxValue}"
-                                  MinHue="{TemplateBinding MinHue}"
-                                  MinSaturation="{TemplateBinding MinSaturation}"
-                                  MinValue="{TemplateBinding MinValue}"
-                                  Shape="{TemplateBinding ColorSpectrumShape}" />
-                <Grid x:Name="PART_ColorPreviewRectangleGrid"
-                      ColumnDefinitions="*,*"
-                      IsVisible="{TemplateBinding IsColorPreviewVisible}"
-                      RowDefinitions="*,*">
-                  <Rectangle x:Name="PART_ColorPreviewRectangleCheckered"
-                             Grid.RowSpan="2"
-                             Grid.ColumnSpan="2"
-                             VerticalAlignment="Stretch"
-                             Fill="{StaticResource CheckeredVisualBrush}" />
-                  <Rectangle x:Name="PART_ColorPreviewRectangle"
-                             VerticalAlignment="Stretch" />
-                  <Rectangle x:Name="PART_PreviousColorRectangle"
-                             VerticalAlignment="Stretch">
-                    <Rectangle.Fill>
-                      <SolidColorBrush Color="{Binding Path=PreviousColor, RelativeSource={RelativeSource TemplatedParent}}" />
-                    </Rectangle.Fill>
-                  </Rectangle>
-                  <Rectangle x:Name="PART_BorderRectangle"
-                             Grid.RowSpan="2"
-                             Grid.ColumnSpan="2"
-                             Stroke="{DynamicResource SystemControlForegroundListLowBrush}"
-                             StrokeThickness="2"
-                             Classes="ColorPickerBorderStyle" />
-                </Grid>
+                <Border CornerRadius="4" ClipToBounds="True">
+                  <ui:ColorSpectrum x:Name="PART_ColorSpectrum"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    MinWidth="256"
+                                    MinHeight="256"
+                                    MaxWidth="336"
+                                    MaxHeight="336"
+                                    Components="{TemplateBinding ColorSpectrumComponents}"
+                                    MaxHue="{TemplateBinding MaxHue}"
+                                    MaxSaturation="{TemplateBinding MaxSaturation}"
+                                    MaxValue="{TemplateBinding MaxValue}"
+                                    MinHue="{TemplateBinding MinHue}"
+                                    MinSaturation="{TemplateBinding MinSaturation}"
+                                    MinValue="{TemplateBinding MinValue}"
+                                    Shape="{TemplateBinding ColorSpectrumShape}"/>
+                </Border>
+                <Border CornerRadius="3"
+                        ClipToBounds="True"
+                        IsVisible="{TemplateBinding IsColorPreviewVisible}"
+                        x:Name="PART_ColorPreviewRectangleBorder"
+                        BorderThickness="1">
+                  <Grid ColumnDefinitions="*,*"
+                        RowDefinitions="*,*">
+                    <Rectangle x:Name="PART_ColorPreviewRectangleCheckered"
+                               Grid.RowSpan="2"
+                               Grid.ColumnSpan="2"
+                               VerticalAlignment="Stretch"
+                               Fill="{StaticResource CheckeredVisualBrush}" />
+                    <Border x:Name="PART_ColorPreviewRectangle"
+                            VerticalAlignment="Stretch" />
+                    <Border x:Name="PART_PreviousColorRectangle"
+                            VerticalAlignment="Stretch">
+                      <Border.Background>
+                        <SolidColorBrush Color="{Binding Path=PreviousColor, RelativeSource={RelativeSource TemplatedParent}}" />
+                      </Border.Background>
+                    </Border>
+                  </Grid>
+                </Border>
               </Grid>
-              <Grid x:Name="PART_ThirdDimensionSliderGrid"
+              <Panel x:Name="PART_ThirdDimensionSliderGrid"
                     Margin="0,12,0,0"
                     IsVisible="{TemplateBinding IsColorSliderVisible}">
-                <Rectangle x:Name="PART_ThirdDimensionSliderRectangle"
-                           Height="11"
-                           VerticalAlignment="Center">
-                  <Rectangle.Fill>
+                <Border x:Name="PART_ThirdDimensionSliderRectangle"
+                        Height="11"
+                        VerticalAlignment="Center"
+                        CornerRadius="99"
+                        Margin="1,0,1,0">
+                  <Border.Background>
                     <LinearGradientBrush />
-                  </Rectangle.Fill>
-                </Rectangle>
+                  </Border.Background>
+                </Border>
                 <ui:ColorPickerSlider x:Name="PART_ThirdDimensionSlider"
                                       ColorChannel="Value"
                                       Maximum="100"
-                                      Minimum="0" />
-              </Grid>
-              <Grid x:Name="PART_AlphaSliderGrid"
-                    Margin="0,12,0,0"
+                                      Minimum="0"
+                                      Foreground="Transparent" />
+              </Panel>
+              <Panel x:Name="PART_AlphaSliderGrid"
+                    Margin="0,-12,0,0"
                     IsVisible="{TemplateBinding IsAlphaSliderVisible}">
-                <Rectangle x:Name="PART_AlphaSliderCheckeredRectangle"
-                           Height="11"
-                           VerticalAlignment="Center"
-                           Fill="{StaticResource CheckeredVisualBrush}" />
-                <Rectangle x:Name="PART_AlphaSliderBackgroundRectangle"
-                           Height="11"
-                           VerticalAlignment="Center">
-                  <Rectangle.Fill>
+                <Border x:Name="PART_AlphaSliderCheckeredRectangle"
+                        Height="11"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource CheckeredVisualBrush}"
+                        CornerRadius="99"
+                        Margin="1,0,1,0"/>
+                <Border x:Name="PART_AlphaSliderBackgroundRectangle"
+                        Height="11"
+                        VerticalAlignment="Center"
+                        CornerRadius="99"
+                        Margin="1,0,1,0">
+                  <Border.Background>
                     <LinearGradientBrush />
-                  </Rectangle.Fill>
-                </Rectangle>
+                  </Border.Background>
+                </Border>
                 <ui:ColorPickerSlider x:Name="PART_AlphaSlider"
                                       ColorChannel="Alpha"
                                       Maximum="100"
-                                      Minimum="0" />
-              </Grid>
+                                      Minimum="0"
+                                      Foreground="Transparent" />
+              </Panel>
               <ToggleButton x:Name="PART_MoreButton"
                             MinWidth="120"
                             MinHeight="32"
@@ -304,13 +312,16 @@
   <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ ui|ColorSpectrum">
     <Setter Property="IsVisible" Value="False" />
   </Style>
-  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Grid#PART_ColorPreviewRectangleGrid">
+  <Style Selector="ui|ColorPicker /template/ Border#PART_ColorPreviewRectangleBorder">
+    <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundListLowBrush}" />
+  </Style>
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Border#PART_ColorPreviewRectangleBorder">
     <Setter Property="Width" Value="44" />
     <Setter Property="Margin" Value="12,0,0,0" />
     <Setter Property="Grid.Column" Value="1" />
     <Setter Property="Grid.Row" Value="0" />
   </Style>
-  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Grid#PART_ColorPreviewRectangleGrid">
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Border#PART_ColorPreviewRectangleBorder">
     <Setter Property="Height" Value="44" />
     <Setter Property="Margin" Value="0" />
     <Setter Property="Grid.Column" Value="0" />
@@ -343,31 +354,42 @@
     <Setter Property="IsVisible" Value="False" />
   </Style>
 
-  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=true] /template/ Border#PART_ColorPreviewRectangle">
     <Setter Property="Grid.RowSpan" Value="2" />
     <Setter Property="Grid.ColumnSpan" Value="2" />
+    <Setter Property="CornerRadius" Value="3" />
   </Style>
-  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
+  <Style Selector="ui|ColorPicker[IsColorSpectrumVisible=false] /template/ Border#PART_ColorPreviewRectangle">
     <Setter Property="Grid.RowSpan" Value="2" />
     <Setter Property="Grid.ColumnSpan" Value="2" />
   </Style>
 
-  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_ColorPreviewRectangle">
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Border#PART_ColorPreviewRectangle">
     <Setter Property="Grid.RowSpan" Value="1" />
+    <Setter Property="CornerRadius" Value="3,3,0,0" />
   </Style>
-  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_ColorPreviewRectangle">
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Border#PART_ColorPreviewRectangle">
     <Setter Property="Grid.ColumnSpan" Value="1" />
   </Style>
 
-  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Rectangle#PART_PreviousColorRectangle">
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=true] /template/ Border#PART_PreviousColorRectangle">
     <Setter Property="Grid.RowSpan" Value="1" />
     <Setter Property="Grid.ColumnSpan" Value="2" />
     <Setter Property="Grid.Row" Value="1" />
+    <Setter Property="CornerRadius" Value="0,0,3,3" />
   </Style>
-  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Rectangle#PART_PreviousColorRectangle">
+  <Style Selector="ui|ColorPicker:has-previous-color[IsColorSpectrumVisible=false] /template/ Border#PART_PreviousColorRectangle">
     <Setter Property="Grid.RowSpan" Value="2" />
     <Setter Property="Grid.ColumnSpan" Value="1" />
     <Setter Property="Grid.Column" Value="1" />
   </Style>
-
+  <Style Selector="ui|ColorPicker /template/ Slider Thumb.SliderThumbStyle">
+    <Setter Property="Background" Value="Black" />
+  </Style>
+  <Style Selector="ui|ColorPicker /template/ Slider">
+    <Setter Property="Margin" Value="0,0,0,3" />
+  </Style>
+  <Style Selector="ui|ColorPicker /template/ Slider:pointerover RepeatButton">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
 </Styles>
