@@ -14,7 +14,6 @@ using Avalonia.VisualTree;
 
 namespace AvaloniaWinUI.ColorPicker.Sample.Views
 {
-    [GenerateTypedNameReferences]
     public partial class ColorPickerPage : UserControl
     {
         private ToolTip? colorNameToolTip;
@@ -32,7 +31,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
         public void InitializeComponent()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent(true);
 
             // Initialize the ColorPicker to a known default color so we have a known starting point.
             ColorPicker.Color = Colors.Red;
@@ -83,9 +82,9 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
             selectionEllipsePanel = FindVisualChildByName(ColorPicker, "PART_SelectionEllipsePanel") as Panel;
 
-            if (selectionEllipsePanel != null)
+            if (selectionEllipsePanel != null && previousColorRectangle != null)
             {
-                previousColorRectangle.GetPropertyChangedObservable(Canvas.LeftProperty).AddClassHandler<Panel>(SelectionEllipsePositionChanged);
+                previousColorRectangle!.GetPropertyChangedObservable(Canvas.LeftProperty).AddClassHandler<Panel>(SelectionEllipsePositionChanged);
                 previousColorRectangle.GetPropertyChangedObservable(Canvas.TopProperty).AddClassHandler<Panel>(SelectionEllipsePositionChanged);
 
                 UpdateSelectionEllipsePosition();
@@ -286,7 +285,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
         public void ThemeLightButtonClick(object? sender, RoutedEventArgs args)
         {
-            Application.Current.Styles.Clear();
+            Application.Current!.Styles.Clear();
             Application.Current.Styles.Add(new FluentTheme(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Mode = FluentThemeMode.Light });
             Application.Current.Styles.Add(new StyleInclude(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Source = new Uri("avares://AvaloniaWinUI.ColorPicker/Themes/Fluent.xaml") });
 
@@ -300,7 +299,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
         public void ThemeDarkButtonClick(object? sender, RoutedEventArgs e)
         {
-            Application.Current.Styles.Clear();
+            Application.Current!.Styles.Clear();
             Application.Current.Styles.Add(new FluentTheme(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Mode = FluentThemeMode.Dark });
             Application.Current.Styles.Add(new StyleInclude(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Source = new Uri("avares://AvaloniaWinUI.ColorPicker/Themes/Fluent.xaml") });
             if (moreButton != null)

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.7" />
+    <PackageReference Include="Avalonia" Version="0.10.12" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +25,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
