@@ -363,7 +363,7 @@ namespace AvaloniaWinUI.ColorPicker
             return originalAlpha / 100;
         }
 
-        internal static IBitmap CreateBitmapFromPixelData(int pixelWidth, int pixelHeight, List<byte> bgraMinPixelData)
+        internal static Bitmap CreateBitmapFromPixelData(int pixelWidth, int pixelHeight, List<byte> bgraMinPixelData)
         {
             var bitmap = new WriteableBitmap(new PixelSize(pixelWidth, pixelHeight), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
 

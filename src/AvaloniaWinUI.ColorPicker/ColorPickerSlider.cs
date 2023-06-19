@@ -12,13 +12,13 @@ using Avalonia.Styling;
 
 namespace AvaloniaWinUI.ColorPicker
 {
-    public partial class ColorPickerSlider : Slider, IStyleable
+    public partial class ColorPickerSlider : Slider
     {
         private Thumb? _thumb;
 
-        Type IStyleable.StyleKey => typeof(Slider);
+        protected override Type StyleKeyOverride => typeof(Slider);
 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             base.OnPropertyChanged(change);
 
@@ -34,7 +34,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             _thumb = e.NameScope.Find<Thumb>("thumb");
 
-            if (ToolTip.GetTip(_thumb) is ToolTip toolTip)
+            if (_thumb != null && ToolTip.GetTip(_thumb) is ToolTip toolTip)
             {
                 toolTip.Content = GetToolTipString();
             }
@@ -59,7 +59,7 @@ namespace AvaloniaWinUI.ColorPicker
             {
                 return;
             }
-            var isControlDown = args.KeyModifiers.HasFlagCustom(KeyModifiers.Control);
+            var isControlDown = args.KeyModifiers.HasFlag(KeyModifiers.Control);
 
             double minBound;
             double maxBound;
@@ -157,7 +157,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private ColorPicker GetParentColorPicker()
+        private ColorPicker? GetParentColorPicker()
         {
             return this.FindAncestorOfType<ColorPicker>();
         }

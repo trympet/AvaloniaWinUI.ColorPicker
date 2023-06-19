@@ -34,7 +34,7 @@
                  Stretch="Uniform"
                  DestinationRect="0,0,8,8">
       <VisualBrush.Visual>
-        <DrawingPresenter Width="8"
+        <!--<DrawingPresenter Width="8"
                           Height="8">
           <DrawingGroup>
             <GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z"
@@ -42,7 +42,19 @@
             <GeometryDrawing Geometry="M0,1 L2,1 2,2, 1,2 1,0 0,0Z"
                              Brush="{DynamicResource SystemListLowColor}" />
           </DrawingGroup>
-        </DrawingPresenter>
+        </DrawingPresenter>-->
+				<Image>
+					<Image.Source>
+						<DrawingImage>
+							<DrawingGroup>
+								<GeometryDrawing Geometry="M0,0 L2,0 2,2, 0,2Z"
+																 Brush="Transparent" />
+								<GeometryDrawing Geometry="M0,1 L2,1 2,2, 1,2 1,0 0,0Z"
+																 Brush="{DynamicResource SystemListLowColor}" />
+							</DrawingGroup>
+						</DrawingImage>
+					</Image.Source>
+				</Image>
       </VisualBrush.Visual>
     </VisualBrush>
   </Styles.Resources>
@@ -105,7 +117,7 @@
                 </Grid>
               </Grid>
               <Panel x:Name="PART_ThirdDimensionSliderGrid"
-                    Margin="0,12,0,0"
+                    Margin="0,12,0,3"
                     IsVisible="{TemplateBinding IsColorSliderVisible}">
                 <Border x:Name="PART_ThirdDimensionSliderRectangle"
                         Height="11"
@@ -123,7 +135,7 @@
                                       Foreground="Transparent" />
               </Panel>
               <Panel x:Name="PART_AlphaSliderGrid"
-                    Margin="0,-12,0,0"
+                    Margin="0,3"
                     IsVisible="{TemplateBinding IsAlphaSliderVisible}">
                 <Border x:Name="PART_AlphaSliderCheckeredRectangle"
                         Height="11"

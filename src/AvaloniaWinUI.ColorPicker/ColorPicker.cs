@@ -131,8 +131,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             if (m_moreButton != null)
             {
-                m_moreButton.Checked += OnMoreButtonChecked;
-                m_moreButton.Unchecked += OnMoreButtonUnchecked;
+                m_moreButton.IsCheckedChanged += OnMoreButtonChecked;
 
                 if (args.NameScope.Get<TextBlock>("PART_MoreButtonLabel") is TextBlock moreButtonLabel)
                 {
@@ -246,7 +245,7 @@ namespace AvaloniaWinUI.ColorPicker
             UpdatePseudoclasses();
         }
 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs args)
         {
             var property = args.Property;
 
@@ -285,9 +284,13 @@ namespace AvaloniaWinUI.ColorPicker
             {
                 OnIsColorSpectrumVisibleChanged();
             }
+            else
+            {
+                base.OnPropertyChanged(args);
+            }
         }
 
-        private void OnColorChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnColorChanged(AvaloniaPropertyChangedEventArgs args)
         {
             // If we're in the process of internally updating the color, then we don't want to respond to the Color property changing,
             // aside from raising the ColorChanged event.
@@ -303,8 +306,8 @@ namespace AvaloniaWinUI.ColorPicker
                 UpdateColorControls(ColorUpdateReason.ColorPropertyChanged);
             }
 
-            var oldColor = args.OldValue.GetValueOrDefault<Color>();
-            var newColor = args.NewValue.GetValueOrDefault<Color>();
+            var oldColor = args.GetOldValue<Color>();
+            var newColor = args.GetNewValue<Color>();
 
             if (oldColor.A != newColor.A ||
                 oldColor.R != newColor.R ||
@@ -539,7 +542,7 @@ namespace AvaloniaWinUI.ColorPicker
             m_updatingControls = false;
         }
 
-        private void OnColorSpectrumColorChanged(object sender, ColorChangedEventArgs args)
+        private void OnColorSpectrumColorChanged(object? sender, ColorChangedEventArgs args)
         {
             // If we're updating controls, then this is being raised in response to that,
             // so we'll ignore it.
@@ -548,11 +551,11 @@ namespace AvaloniaWinUI.ColorPicker
                 return;
             }
 
-            var hsvColor = (Hsv)((ColorSpectrum)sender).HsvColor;
+            var hsvColor = (Hsv)((ColorSpectrum)sender!).HsvColor;
             UpdateColor(hsvColor, ColorUpdateReason.ColorSpectrumColorChanged);
         }
 
-        private void OnColorSpectrumPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
+        private void OnColorSpectrumPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
         {
             if (args.Property == WidthProperty)
             {
@@ -560,12 +563,12 @@ namespace AvaloniaWinUI.ColorPicker
                 // the width is the limiting factor.  Since we want it to always be a square, we'll set its height to whatever its width is.
                 if (args.NewValue is double newValue)
                 {
-                    ((ColorSpectrum)sender).Height = newValue;
+                    ((ColorSpectrum)sender!).Height = newValue;
                 }
             }
         }
 
-        private void OnThirdDimensionSliderPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
+        private void OnThirdDimensionSliderPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
         {
             if (args.Property == RangeBase.ValueProperty)
             {
@@ -582,7 +585,7 @@ namespace AvaloniaWinUI.ColorPicker
                 var h = m_currentHsv.H;
                 var s = m_currentHsv.S;
                 var v = m_currentHsv.V;
-                var value = ((Slider)sender).Value;
+                var value = ((Slider)sender!).Value;
 
                 switch (components)
                 {
@@ -606,7 +609,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnAlphaSliderPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs args)
+        private void OnAlphaSliderPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
         {
             if (args.Property == RangeBase.ValueProperty)
             {
@@ -618,19 +621,13 @@ namespace AvaloniaWinUI.ColorPicker
                     return;
                 }
 
-                UpdateColor(((Slider)sender).Value / 100.0, ColorUpdateReason.AlphaSliderChanged);
+                UpdateColor(((Slider)sender!).Value / 100.0, ColorUpdateReason.AlphaSliderChanged);
             }
         }
 
-        private void OnMoreButtonChecked(object sender, RoutedEventArgs args)
+        private void OnMoreButtonChecked(object? sender, RoutedEventArgs args)
         {
-            m_textEntryGridOpened = true;
-            UpdateMoreButton();
-        }
-
-        private void OnMoreButtonUnchecked(object sender, RoutedEventArgs args)
-        {
-            m_textEntryGridOpened = false;
+            m_textEntryGridOpened = m_moreButton?.IsChecked ?? false;
             UpdateMoreButton();
         }
 
@@ -642,17 +639,17 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnTextBoxGotFocus(object sender, GotFocusEventArgs args)
+        private void OnTextBoxGotFocus(object? sender, GotFocusEventArgs args)
         {
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
 
             m_isFocusedTextBoxValid = true;
-            m_previousString = textBox.Text;
+            m_previousString = textBox.Text ?? string.Empty;
         }
 
-        private void OnTextBoxLostFocus(object sender, RoutedEventArgs args)
+        private void OnTextBoxLostFocus(object? sender, RoutedEventArgs args)
         {
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
 
             // When a text box loses focus, we want to check whether its contents were valid.
             // If they weren't, then we'll roll back its contents to their last valid value.
@@ -666,7 +663,7 @@ namespace AvaloniaWinUI.ColorPicker
             UpdateColorControls(ColorUpdateReason.ColorPropertyChanged);
         }
 
-        private void OnRgbTextChanging(object sender, TextInputEventArgs args)
+        private void OnRgbTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -678,7 +675,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             // We'll respond to the text change if the user has entered a valid value.
             // Otherwise, we'll do nothing except mark the text box's contents as invalid.
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
             var componentValueHasValue = int.TryParse(textBox.Text, out var componentValue);
             if (!componentValueHasValue ||
                 componentValue < 0 ||
@@ -693,7 +690,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnHueTextChanging(object sender, TextInputEventArgs args)
+        private void OnHueTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -705,7 +702,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             // We'll respond to the text change if the user has entered a valid value.
             // Otherwise, we'll do nothing except mark the text box's contents as invalid.
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
             var hueValueHasValue = int.TryParse(textBox.Text, out var hueValue);
             if (!hueValueHasValue ||
                 hueValue < MinHue ||
@@ -720,7 +717,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnSaturationTextChanging(object sender, TextInputEventArgs args)
+        private void OnSaturationTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -732,7 +729,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             // We'll respond to the text change if the user has entered a valid value.
             // Otherwise, we'll do nothing except mark the text box's contents as invalid.
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
             var saturationValueHasValue = int.TryParse(textBox.Text, out var saturationValue);
             if (!saturationValueHasValue ||
                 saturationValue < (long)MinSaturation ||
@@ -747,7 +744,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnValueTextChanging(object sender, TextInputEventArgs args)
+        private void OnValueTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -759,7 +756,7 @@ namespace AvaloniaWinUI.ColorPicker
 
             // We'll respond to the text change if the user has entered a valid value.
             // Otherwise, we'll do nothing except mark the text box's contents as invalid.
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox)sender!;
             var valueHasValue = int.TryParse(textBox.Text, out var value);
             if (!valueHasValue ||
                 value < (long)MinValue ||
@@ -774,7 +771,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnAlphaTextChanging(object sender, TextInputEventArgs args)
+        private void OnAlphaTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -791,7 +788,7 @@ namespace AvaloniaWinUI.ColorPicker
                 // m_alphaTextBox.SelectionStart + m_alphaTextBox.SelectionLength
                 var cursorPosition = m_alphaTextBox.CaretIndex;
 
-                var alphaTextBoxText = m_alphaTextBox.Text;
+                var alphaTextBoxText = m_alphaTextBox.Text ?? string.Empty;
 
                 if (alphaTextBoxText.Length == 0 || alphaTextBoxText[alphaTextBoxText.Length - 1] != '%')
                 {
@@ -815,7 +812,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnHexTextChanging(object sender, TextInputEventArgs args)
+        private void OnHexTextChanging(object? sender, TextInputEventArgs args)
         {
             // If we're in the process of updating controls in response to a color change,
             // then we don't want to do anything in response to a control being updated,
@@ -825,8 +822,8 @@ namespace AvaloniaWinUI.ColorPicker
                 return;
             }
 
-            var hexTextBox = (TextBox)sender;
-            var hexTextBoxText = hexTextBox.Text;
+            var hexTextBox = (TextBox)sender!;
+            var hexTextBoxText = hexTextBox.Text ?? string.Empty;
 
             // If the user hasn't entered a #, we'll do that for them, keeping the cursor
             // where it was before.
@@ -885,7 +882,7 @@ namespace AvaloniaWinUI.ColorPicker
 
         private string GetCurrentHexValue()
         {
-            var colorHex = ColorConversion.ColorFromRgba(m_currentRgb, m_currentAlpha).ToUint32().ToString("x8", CultureInfo.InvariantCulture);
+            var colorHex = ColorConversion.ColorFromRgba(m_currentRgb, m_currentAlpha).ToUInt32().ToString("x8", CultureInfo.InvariantCulture);
             if (!IsAlphaEnabled)
             {
                 colorHex = colorHex.Substring(2);

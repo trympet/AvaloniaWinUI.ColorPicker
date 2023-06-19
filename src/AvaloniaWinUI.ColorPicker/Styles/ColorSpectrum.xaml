@@ -133,16 +133,16 @@
   </Style>
 
   <Style Selector="ui|ColorSpectrum /template/ Ellipse#PART_FocusEllipse">
-    <Setter Property="Stroke" Value="{DynamicResource SystemControlBackgroundChromeWhiteBrush}" />
+    <Setter Property="Stroke" Value="#FAFAFA" />
   </Style>
   <Style Selector="ui|ColorSpectrum /template/ Ellipse#PART_SelectionEllipse">
-    <Setter Property="Stroke" Value="{DynamicResource SystemControlBackgroundChromeBlackHighBrush}" />
+    <Setter Property="Stroke" Value="#202020" />
   </Style>
   <Style Selector="ui|ColorSpectrum:light-selector /template/ Ellipse#PART_FocusEllipse">
-    <Setter Property="Stroke" Value="{DynamicResource SystemControlBackgroundChromeBlackHighBrush}" />
+    <Setter Property="Stroke" Value="#202020" />
   </Style>
   <Style Selector="ui|ColorSpectrum:light-selector /template/ Ellipse#PART_SelectionEllipse">
-    <Setter Property="Stroke" Value="{DynamicResource SystemControlBackgroundChromeWhiteBrush}" />
+    <Setter Property="Stroke" Value="#FAFAFA" />
   </Style>
 
   <Style Selector="ui|ColorSpectrum:pointerover /template/ Ellipse#PART_SelectionEllipse">

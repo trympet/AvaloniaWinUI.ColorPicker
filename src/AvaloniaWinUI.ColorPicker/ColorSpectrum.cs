@@ -15,7 +15,7 @@ using Avalonia.Utilities;
 
 namespace AvaloniaWinUI.ColorPicker
 {
-    public partial class ColorSpectrum : TemplatedControl
+    public partial class ColorSpectrum : TemplatedControl, IObserver<Rect>
     {
         private bool m_updatingColor;
         private bool m_updatingHsvColor;
@@ -35,15 +35,15 @@ namespace AvaloniaWinUI.ColorPicker
         private Panel? m_selectionEllipsePanel;
         private Control? m_selectionEllipse;
 
-        private IBitmap? m_hueRedBitmap;
-        private IBitmap? m_hueYellowBitmap;
-        private IBitmap? m_hueGreenBitmap;
-        private IBitmap? m_hueCyanBitmap;
-        private IBitmap? m_hueBlueBitmap;
-        private IBitmap? m_huePurpleBitmap;
-        private IBitmap? m_saturationMinimumBitmap;
-        private IBitmap? m_saturationMaximumBitmap;
-        private IBitmap? m_valueBitmap;
+        private Bitmap? m_hueRedBitmap;
+        private Bitmap? m_hueYellowBitmap;
+        private Bitmap? m_hueGreenBitmap;
+        private Bitmap? m_hueCyanBitmap;
+        private Bitmap? m_hueBlueBitmap;
+        private Bitmap? m_huePurpleBitmap;
+        private Bitmap? m_saturationMinimumBitmap;
+        private Bitmap? m_saturationMaximumBitmap;
+        private Bitmap? m_valueBitmap;
 
         // Fields used by UpdateEllipse() to ensure that it's using the data
         // associated with the last call to CreateBitmapsAndColorMap(),
@@ -78,7 +78,7 @@ namespace AvaloniaWinUI.ColorPicker
         protected override Size MeasureOverride(Size availableSize)
         {
             var originalMeasure = base.MeasureOverride(availableSize);
-            var minDimension = Math.Min(MaxWidth, Math.Min(MaxHeight, originalMeasure.IsDefault
+            var minDimension = Math.Min(MaxWidth, Math.Min(MaxHeight, originalMeasure == default
                 ? double.PositiveInfinity
                 : Math.Min(originalMeasure.Width, originalMeasure.Height)));
             return new Size(minDimension, minDimension);
@@ -97,21 +97,18 @@ namespace AvaloniaWinUI.ColorPicker
             m_inputTarget = args.NameScope.Find<Canvas>("PART_InputTarget");
             m_selectionEllipsePanel = args.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
             m_selectionEllipse = args.NameScope.Find<Control>("PART_SelectionEllipse");
-            if (m_layoutRoot != null)
-            {
-                m_layoutRoot.GetObservable(BoundsProperty).Subscribe(_ => CreateBitmapsAndColorMap());
-            }
+            m_layoutRoot?.GetObservable(BoundsProperty).Subscribe(this);
 
             if (m_inputTarget != null)
             {
-                m_inputTarget.PointerEnter += OnInputTargetPointerEntered;
-                m_inputTarget.PointerLeave += OnInputTargetPointerExited;
+                m_inputTarget.PointerEntered += OnInputTargetPointerEntered;
+                m_inputTarget.PointerExited += OnInputTargetPointerExited;
                 m_inputTarget.PointerPressed += OnInputTargetPointerPressed;
                 m_inputTarget.PointerMoved += OnInputTargetPointerMoved;
                 m_inputTarget.PointerReleased += OnInputTargetPointerReleased;
             }
 
-            if (ToolTip.GetTip(m_selectionEllipse) is ToolTip selectionEllipseTooltip)
+            if (m_selectionEllipse != null && ToolTip.GetTip(m_selectionEllipse) is ToolTip selectionEllipseTooltip)
             {
                 selectionEllipseTooltip.Content = ColorHelpers.ToDisplayName(Color);
             }
@@ -241,7 +238,7 @@ namespace AvaloniaWinUI.ColorPicker
             UpdatePseudoclasses();
         }
 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs args)
         {
             if (args.Property == ColorProperty)
             {
@@ -274,14 +271,18 @@ namespace AvaloniaWinUI.ColorPicker
             {
                 OnComponentsChanged();
             }
+            else
+            {
+                base.OnPropertyChanged(args);
+            }
         }
 
-        private void OnColorChanged<T>(AvaloniaPropertyChangedEventArgs<T> args)
+        private void OnColorChanged(AvaloniaPropertyChangedEventArgs args)
         {
             // If we're in the process of internally updating the color, then we don't want to respond to the Color property changing.
             if (!m_updatingColor)
             {
-                var color = args.NewValue.GetValueOrDefault<Color>();
+                var color = args.GetNewValue<Color>();
 
                 m_updatingHsvColor = true;
                 var newHsv = ColorConversion.RgbToHsv(new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0));
@@ -292,7 +293,7 @@ namespace AvaloniaWinUI.ColorPicker
                 UpdateBitmapSources();
             }
 
-            m_oldColor = args.OldValue.GetValueOrDefault<Color>();
+            m_oldColor = args.GetOldValue<Color>();
         }
 
         private void OnHsvColorChanged()
@@ -669,21 +670,21 @@ namespace AvaloniaWinUI.ColorPicker
             UpdatePseudoclasses();
         }
 
-        private void OnInputTargetPointerEntered(object sender, PointerEventArgs args)
+        private void OnInputTargetPointerEntered(object? sender, PointerEventArgs args)
         {
             m_isPointerOver = true;
             UpdatePseudoclasses();
             args.Handled = true;
         }
 
-        private void OnInputTargetPointerExited(object sender, PointerEventArgs args)
+        private void OnInputTargetPointerExited(object? sender, PointerEventArgs args)
         {
             m_isPointerOver = false;
             UpdatePseudoclasses();
             args.Handled = true;
         }
 
-        private void OnInputTargetPointerPressed(object sender, PointerPressedEventArgs args)
+        private void OnInputTargetPointerPressed(object? sender, PointerPressedEventArgs args)
         {
             Focus(); // TODO Focus type should be Pointer
 
@@ -701,7 +702,7 @@ namespace AvaloniaWinUI.ColorPicker
             args.Handled = true;
         }
 
-        private void OnInputTargetPointerMoved(object sender, PointerEventArgs args)
+        private void OnInputTargetPointerMoved(object? sender, PointerEventArgs args)
         {
             if (!m_isPointerPressed)
             {
@@ -712,7 +713,7 @@ namespace AvaloniaWinUI.ColorPicker
             args.Handled = true;
         }
 
-        private void OnInputTargetPointerReleased(object sender, PointerReleasedEventArgs args)
+        private void OnInputTargetPointerReleased(object? sender, PointerReleasedEventArgs args)
         {
             m_isPointerPressed = false;
             m_shouldShowLargeSelection = false;
@@ -1384,6 +1385,19 @@ namespace AvaloniaWinUI.ColorPicker
             var bg = displayedColor.B <= 10 ? displayedColor.B / 3294.0 : Math.Pow((displayedColor.B / 269.0) + 0.0513, 2.4);
 
             return (0.2126 * rg) + (0.7152 * gg) + (0.0722 * bg) <= 0.5;
+        }
+
+        void IObserver<Rect>.OnCompleted()
+        {
+        }
+
+        void IObserver<Rect>.OnError(Exception error)
+        {
+        }
+
+        void IObserver<Rect>.OnNext(Rect value)
+        {
+            CreateBitmapsAndColorMap();
         }
     }
 }
