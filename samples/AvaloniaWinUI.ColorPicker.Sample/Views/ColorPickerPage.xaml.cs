@@ -6,10 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
-using Avalonia.Themes.Fluent;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AvaloniaWinUI.ColorPicker.Sample.Views
@@ -27,19 +25,14 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
         public ColorPickerPage()
         {
             InitializeComponent();
-        }
-
-        public void InitializeComponent()
-        {
-            InitializeComponent(true);
 
             // Initialize the ColorPicker to a known default color so we have a known starting point.
             ColorPicker.Color = Colors.Red;
             ColorPicker.ColorChanged += ColorPickerColorChanged;
             ColorPicker.TemplateApplied += ColorPickerTemplateApplied;
 
-            this.FindControl<ComboBox>("ColorSpectrumShapeComboBox").SelectionChanged += ColorSpectrumShapeComboBoxSelectionChanged;
-            this.FindControl<ComboBox>("ColorSpectrumComponentsComboBox").SelectionChanged += ColorSpectrumComponentsComboBoxSelectionChanged;
+            ColorSpectrumShapeComboBox.SelectionChanged += ColorSpectrumShapeComboBoxSelectionChanged;
+            ColorSpectrumComponentsComboBox.SelectionChanged += ColorSpectrumComponentsComboBoxSelectionChanged;
 
             spectrumRectangle = null;
             colorSpectrumInputTarget = null;
@@ -108,7 +101,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
             }
         }
 
-        public IVisual? FindVisualChildByName(IVisual parent, string name)
+        public Visual? FindVisualChildByName(Visual parent, string name)
         {
             if ((parent as Control)?.Name == name)
             {
@@ -285,9 +278,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
         public void ThemeLightButtonClick(object? sender, RoutedEventArgs args)
         {
-            Application.Current!.Styles.Clear();
-            Application.Current.Styles.Add(new FluentTheme(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Mode = FluentThemeMode.Light });
-            Application.Current.Styles.Add(new StyleInclude(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Source = new Uri("avares://AvaloniaWinUI.ColorPicker/Themes/Fluent.xaml") });
+            Application.Current!.RequestedThemeVariant = ThemeVariant.Light;
 
             if (moreButton != null)
             {
@@ -299,9 +290,7 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
 
         public void ThemeDarkButtonClick(object? sender, RoutedEventArgs e)
         {
-            Application.Current!.Styles.Clear();
-            Application.Current.Styles.Add(new FluentTheme(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Mode = FluentThemeMode.Dark });
-            Application.Current.Styles.Add(new StyleInclude(new Uri("avares://AvaloniaWinUI.ColorPicker.Sample")) { Source = new Uri("avares://AvaloniaWinUI.ColorPicker/Themes/Fluent.xaml") });
+            Application.Current!.RequestedThemeVariant = ThemeVariant.Dark;
             if (moreButton != null)
             {
                 MoreButtonBackgroundTextBlock.Text = (moreButton.Background as SolidColorBrush)?.Color.ToString();
@@ -364,14 +353,11 @@ namespace AvaloniaWinUI.ColorPicker.Sample.Views
                 : "(nothing)";
         }
 
-        public void RTLCheckBoxChecked(object? sender, RoutedEventArgs e)
+        public void RTLCheckBoxIsCheckedChanged(object? sender, RoutedEventArgs e)
         {
-            //this.ColorPicker.FlowDirection = FlowDirection.RightToLeft;
-        }
-
-        public void RTLCheckBoxUnchecked(object? sender, RoutedEventArgs e)
-        {
-            //this.ColorPicker.FlowDirection = FlowDirection.LeftToRight;
+            ColorPicker.FlowDirection = ((CheckBox)sender!).IsChecked == true
+                ? FlowDirection.RightToLeft
+                : FlowDirection.LeftToRight;
         }
     }
 }

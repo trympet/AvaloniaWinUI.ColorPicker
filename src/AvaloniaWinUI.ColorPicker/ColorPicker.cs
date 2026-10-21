@@ -639,7 +639,7 @@ namespace AvaloniaWinUI.ColorPicker
             }
         }
 
-        private void OnTextBoxGotFocus(object? sender, GotFocusEventArgs args)
+        private void OnTextBoxGotFocus(object? sender, FocusChangedEventArgs args)
         {
             var textBox = (TextBox)sender!;
 
@@ -647,7 +647,7 @@ namespace AvaloniaWinUI.ColorPicker
             m_previousString = textBox.Text ?? string.Empty;
         }
 
-        private void OnTextBoxLostFocus(object? sender, RoutedEventArgs args)
+        private void OnTextBoxLostFocus(object? sender, FocusChangedEventArgs args)
         {
             var textBox = (TextBox)sender!;
 

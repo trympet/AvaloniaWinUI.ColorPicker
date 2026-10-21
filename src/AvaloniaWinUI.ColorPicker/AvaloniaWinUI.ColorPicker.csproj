@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <Version>2.1.0-prerelease</Version>
+    <Version>3.0.0</Version>
     <PackageId>AvaloniaWinUI.ColorPicker.trympet</PackageId>
-    <Authors>maxkatz6</Authors>
+    <Authors>maxkatz6;trympet</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.*-rc.*" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,13 +25,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.*">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

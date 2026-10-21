@@ -11,7 +11,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Utilities;
 
 namespace AvaloniaWinUI.ColorPicker
 {
@@ -218,7 +217,7 @@ namespace AvaloniaWinUI.ColorPicker
             args.Handled = true;
         }
 
-        protected override void OnGotFocus(GotFocusEventArgs args)
+        protected override void OnGotFocus(FocusChangedEventArgs args)
         {
             if (m_selectionEllipse != null)
             {
@@ -228,7 +227,7 @@ namespace AvaloniaWinUI.ColorPicker
             UpdatePseudoclasses();
         }
 
-        protected override void OnLostFocus(RoutedEventArgs args)
+        protected override void OnLostFocus(FocusChangedEventArgs args)
         {
             if (m_selectionEllipse != null)
             {
@@ -521,9 +520,18 @@ namespace AvaloniaWinUI.ColorPicker
 
             var hsvColor = (Hsv)HsvColor;
 
-            hsvColor.H = MathUtilities.Clamp(hsvColor.H, m_minHueFromLastBitmapCreation, m_maxHueFromLastBitmapCreation);
-            hsvColor.S = MathUtilities.Clamp(hsvColor.S, m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f);
-            hsvColor.V = MathUtilities.Clamp(hsvColor.V, m_minValueFromLastBitmapCreation / 100.0f, m_maxValueFromLastBitmapCreation / 100.0f);
+            hsvColor.H = Math.Clamp(
+                hsvColor.H,
+                m_minHueFromLastBitmapCreation,
+                Math.Max(m_minHueFromLastBitmapCreation, m_maxHueFromLastBitmapCreation));
+            hsvColor.S = Math.Clamp(
+                hsvColor.S,
+                m_minSaturationFromLastBitmapCreation / 100.0f,
+                Math.Max(m_minSaturationFromLastBitmapCreation, m_maxSaturationFromLastBitmapCreation) / 100.0f);
+            hsvColor.V = Math.Clamp(
+                hsvColor.V,
+                m_minValueFromLastBitmapCreation / 100.0f,
+                Math.Max(m_minValueFromLastBitmapCreation, m_maxValueFromLastBitmapCreation) / 100.0f);
 
             if (m_shapeFromLastBitmapCreation == ColorSpectrumShape.Box)
             {

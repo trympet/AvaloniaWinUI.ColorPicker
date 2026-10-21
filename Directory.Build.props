@@ -1,7 +1,6 @@
 ﻿<Project>
 
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
@@ -15,20 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <AvaloniaResource Include="**\*.xaml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)">
+    <AvaloniaXaml Include="**\*.xaml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)">
       <SubType>Designer</SubType>
-    </AvaloniaResource>
+    </AvaloniaXaml>
   </ItemGroup>
 
 </Project>

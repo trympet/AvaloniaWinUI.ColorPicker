@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
+using Avalonia.Headless.XUnit;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 using Xunit;
@@ -15,7 +18,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
 {
     public class ColorPickerTests
     {
-        [Fact]
+        [AvaloniaFact]
         public void ColorPickerTest()
         {
             var colorPicker = new ColorPicker();
@@ -86,7 +89,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             Assert.Equal(ColorSpectrumComponents.HueValue, colorPicker.ColorSpectrumComponents);
         }
 
-        [Fact]
+        [AvaloniaFact]
         public void ColorPickerEventsTest()
         {
             var colorPicker = new ColorPicker();
@@ -100,7 +103,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             colorPicker.Color = Colors.Green;
         }
 
-        [Fact]
+        [AvaloniaFact]
         public void ColorSpectrumTest()
         {
             var colorSpectrum = new ColorSpectrum();
@@ -151,7 +154,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             Assert.Equal(new Vector4() { X = 120.0f, Y = 1.0f, Z = 1.0f, W = 1.0f }, colorSpectrum.HsvColor);
         }
 
-        [Fact]
+        [AvaloniaFact]
         public void ValidateHueRange()
         {
             Assert.Throws<ArgumentException>(() =>
@@ -163,7 +166,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             });
         }
 
-        [Fact]
+        [AvaloniaFact]
         public async Task VerifyClearingHexInputFieldDoesNotCrash()
         {
             var colorPicker = new ColorPicker
@@ -182,13 +185,13 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             var hexTextBox = FindVisualChildren<TextBox>(colorPicker, "PART_HexTextBox").FirstOrDefault();
             Assert.NotNull(hexTextBox);
 
-            Assert.True(hexTextBox!.Text.Length > 0, "Hex TextBox should have not been empty.");
+            Assert.False(string.IsNullOrEmpty(hexTextBox!.Text), "Hex TextBox should have not been empty.");
 
             // Clearing the hex input field should not crash the app.
             hexTextBox.Text = "";
         }
 
-        [Fact]
+        [AvaloniaFact]
         public async Task VerifyClearingAlphaChannelInputFieldDoesNotCrash()
         {
             var colorPicker = new ColorPicker
@@ -207,13 +210,13 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             var alphaChannelTextBox = FindVisualChildren<TextBox>(colorPicker, "PART_AlphaTextBox").FirstOrDefault();
             Assert.NotNull(alphaChannelTextBox);
 
-            Assert.True(alphaChannelTextBox!.Text.Length > 0, "Alpha channel TextBox should have not been empty.");
+            Assert.False(string.IsNullOrEmpty(alphaChannelTextBox!.Text), "Alpha channel TextBox should have not been empty.");
 
             // Clearing the alpha channel input field should not crash the app.
             alphaChannelTextBox.Text = "";
         }
 
-        [Fact]
+        [AvaloniaFact]
         public async Task VerifyVisualTree()
         {
             var colorPicker = new ColorPicker { Name = "PART_ColorPicker", IsAlphaEnabled = true, Width = 300, Height = 600 };
@@ -234,17 +237,130 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             Assert.Equal(colorPicker, control);
         }
 
-        public static IEnumerable<T> FindVisualChildren<T>(IVisual depObj, string name)
-            where T : IVisual
+        [AvaloniaFact]
+        public async Task VerifySpectrumFocusToolTip()
+        {
+            var colorPicker = new ColorPicker();
+            var focusTarget = new Button { Content = "Focus target" };
+            var window = new Window
+            {
+                Content = new StackPanel
+                {
+                    Children = { colorPicker, focusTarget }
+                }
+            };
+
+            try
+            {
+                window.Show();
+                await WaitForLoadedAsync(colorPicker).ConfigureAwait(true);
+
+                var spectrum = FindVisualChildren<ColorSpectrum>(colorPicker, "PART_ColorSpectrum").Single();
+                var selectionEllipse = FindVisualChildren<Control>(spectrum, "PART_SelectionEllipse").Single();
+                spectrum.Focusable = true;
+
+                Assert.True(focusTarget.Focus());
+                Assert.True(spectrum.Focus());
+                Assert.True(ToolTip.GetIsOpen(selectionEllipse));
+
+                Assert.True(focusTarget.Focus());
+                Assert.False(ToolTip.GetIsOpen(selectionEllipse));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        [AvaloniaTheory]
+        [InlineData(ColorSpectrumShape.Box, false)]
+        [InlineData(ColorSpectrumShape.Box, true)]
+        [InlineData(ColorSpectrumShape.Ring, false)]
+        [InlineData(ColorSpectrumShape.Ring, true)]
+        public async Task VerifyTemplatesAcrossThemesAndSpectrumShapes(ColorSpectrumShape shape, bool useDarkTheme)
+        {
+            var colorPicker = new ColorPicker
+            {
+                ColorSpectrumShape = shape,
+                IsAlphaEnabled = true
+            };
+            var window = new Window
+            {
+                Content = colorPicker,
+                RequestedThemeVariant = useDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light
+            };
+
+            try
+            {
+                window.Show();
+                await WaitForLoadedAsync(colorPicker).ConfigureAwait(true);
+
+                var spectrum = FindVisualChildren<ColorSpectrum>(colorPicker, "PART_ColorSpectrum").Single();
+                var shapeName = shape == ColorSpectrumShape.Box ? "PART_SpectrumRectangle" : "PART_SpectrumEllipse";
+                var spectrumShape = FindVisualChildren<Shape>(spectrum, shapeName).Single();
+
+                Assert.Equal(shape, spectrum.Shape);
+                Assert.True(spectrumShape.IsVisible);
+                Assert.NotNull(Assert.IsType<ImageBrush>(spectrumShape.Fill).Source);
+
+                colorPicker.Color = Colors.Blue;
+                Assert.Equal(Colors.Blue, spectrum.Color);
+
+                window.RequestedThemeVariant = useDarkTheme ? ThemeVariant.Light : ThemeVariant.Dark;
+                Assert.Equal(window.RequestedThemeVariant, colorPicker.ActualThemeVariant);
+                Assert.NotNull(Assert.IsType<ImageBrush>(spectrumShape.Fill).Source);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        [AvaloniaTheory]
+        [InlineData(ColorSpectrumShape.Box)]
+        [InlineData(ColorSpectrumShape.Ring)]
+        public async Task VerifySpectrumWithReversedBounds(ColorSpectrumShape shape)
+        {
+            var spectrum = new ColorSpectrum
+            {
+                Width = 256,
+                Height = 256,
+                Shape = shape,
+                MinHue = 200,
+                MaxHue = 100,
+                MinSaturation = 80,
+                MaxSaturation = 20,
+                MinValue = 80,
+                MaxValue = 20
+            };
+            var window = new Window { Content = spectrum };
+
+            try
+            {
+                window.Show();
+                await WaitForLoadedAsync(spectrum).ConfigureAwait(true);
+
+                var shapeName = shape == ColorSpectrumShape.Box ? "PART_SpectrumRectangle" : "PART_SpectrumEllipse";
+                var spectrumShape = FindVisualChildren<Shape>(spectrum, shapeName).Single();
+                Assert.NotNull(Assert.IsType<ImageBrush>(spectrumShape.Fill).Source);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        public static IEnumerable<T> FindVisualChildren<T>(Visual depObj, string name)
+            where T : Visual
         {
             if (depObj == null)
             {
                 yield break;
             }
 
-            foreach (var child in depObj.VisualChildren)
+            foreach (var child in depObj.GetVisualChildren())
             {
-                if (child is T typedChild && (child as INamed)?.Name == name)
+                if (child is T typedChild && typedChild.Name == name)
                 {
                     yield return typedChild;
                 }
@@ -256,14 +372,14 @@ namespace AvaloniaWinUI.ColorPicker.Tests
             }
         }
 
-        public static async Task WaitForLoadedAsync(IVisual depObj)
+        public static async Task WaitForLoadedAsync(Visual depObj)
         {
             if (depObj == null)
             {
                 throw new ArgumentNullException(nameof(depObj));
             }
 
-            if (depObj.IsAttachedToVisualTree)
+            if (depObj.IsAttachedToVisualTree())
             {
                 await Task.Yield();
                 return;

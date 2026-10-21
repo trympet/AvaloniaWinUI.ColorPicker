@@ -1,8 +1,9 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="AvaloniaWinUI.ColorPicker.Tests.App">
+             x:Class="AvaloniaWinUI.ColorPicker.Tests.App"
+             RequestedThemeVariant="Dark">
   <Application.Styles>
-    <FluentTheme Mode="Dark" />
+    <FluentTheme />
     <StyleInclude Source="avares://AvaloniaWinUI.ColorPicker/Themes/Fluent.xaml" />
   </Application.Styles>
 </Application>

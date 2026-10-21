@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Headless;
 using Avalonia.Markup.Xaml;
 
 namespace AvaloniaWinUI.ColorPicker.Tests
@@ -8,7 +9,7 @@ namespace AvaloniaWinUI.ColorPicker.Tests
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()
-                .UsePlatformDetect()
+                .UseHeadless(new AvaloniaHeadlessPlatformOptions())
                 .LogToTrace();
         }
 

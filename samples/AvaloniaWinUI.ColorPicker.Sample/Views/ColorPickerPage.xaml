@@ -117,8 +117,7 @@
                     IsChecked="{Binding IsHexInputVisible, ElementName=ColorPicker, Mode=TwoWay}" />
           <CheckBox Name="IsRtlCheckBox"
                     Content="Is RTL"
-                    Checked="RTLCheckBoxChecked"
-                    Unchecked="RTLCheckBoxUnchecked" />
+                    IsCheckedChanged="RTLCheckBoxIsCheckedChanged" />
           <TextBlock>MinimumHueSlider</TextBlock>
           <Slider Name="MinimumHueSlider"
                   Minimum="0"
