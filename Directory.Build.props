@@ -6,6 +6,9 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
+    <EnableAvaloniaXamlCompilation>true</EnableAvaloniaXamlCompilation>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AvaloniaNameGeneratorIsEnabled>true</AvaloniaNameGeneratorIsEnabled>
   </PropertyGroup>
 
   <PropertyGroup>
